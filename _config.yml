@@ -17,6 +17,20 @@ url: "http://cristinashaver.com" # the base hostname & protocol for your site
 twitter_username: cristinashaver
 github_username:  cshaver
 
+sections:
+  about:
+    title: About Me
+    subhead: “Hello World!”
+    content: >
+      Galaxies from which we spring courage of our questions.
+      Network of wormholes cosmic ocean rich in heavy atoms,
+      of brilliant syntheses, Hypatia, white dwarf emerged into
+      consciousness a billion trillion, astonishment tesseract
+      billions upon billions.
+  blog:
+    title: Blog
+    subhead: Just for fun. Projects and junk.
+
 # Build settings
 markdown: kramdown
 dev: true

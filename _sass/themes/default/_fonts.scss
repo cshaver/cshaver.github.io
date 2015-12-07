@@ -6,16 +6,27 @@
 @include font-face("Bakery", "/fonts/bakery/bakery", $file-formats: eot ttf otf woff svg);
 
 $bakery-stack: Bakery, cursive;
-@include void(font-add(Bakery, $bakery-stack));
+@include void(font-add(bakery, $bakery-stack));
+
+@import url(https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300|Open+Sans|PT+Mono);
 
 /**
-  * Open Sans +Condensed
+  * Open Sans Condensed
   * https://www.google.com/fonts/specimen/Open+Sans
   */
-@import url(https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300|Open+Sans);
+$sans-condensed-stack: Open Sans Condensed, sans-serif;
+@include void(font-add(condensed, $sans-condensed-stack));
 
-$open-sans-condensed-stack: Open Sans Condensed, sans-serif;
-@include void(font-add(Open Sans Condensed, $open-sans-condensed-stack));
+/**
+  * Open Sans
+  * https://www.google.com/fonts/specimen/Open+Sans
+  */
+$sans-stack: Open Sans, sans-serif;
+@include void(font-add(sans, $sans-stack));
 
-$open-sans-stack: Open Sans, sans-serif;
-@include void(font-add(Open Sans, $open-sans-stack));
+/**
+  * PT Mono
+  * https://www.google.com/fonts/specimen/PT+Mono
+  */
+$mono-stack: PT Mono, monospace;
+@include void(font-add(mono, $mono-stack));

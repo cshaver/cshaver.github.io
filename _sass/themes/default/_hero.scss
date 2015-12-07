@@ -10,23 +10,26 @@ header {
   @extend %text-center;
 
   h1 {
-    font: {
-      size: 100px;
-      weight: normal;
-      family: font(Bakery);
-    }
-
     margin: 0;
     line-height: 0.75em;
 
+    font: {
+      size: 100px;
+      weight: normal;
+      family: font(bakery);
+    }
+
     @include text-background-fill(url("/images/chalk_@2x.png"), swatch(white));
-    background-size: 500px;
+    background-size: 250px;
     padding: 0.1em 0;
   }
 
   h2 {
     color: swatch(coral);
-    @include font(Open Sans Condensed);
     text-transform: uppercase;
+    font: {
+      weight: normal;
+      family: font(condensed);
+    }
   }
 }
