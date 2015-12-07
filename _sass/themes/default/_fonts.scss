@@ -3,7 +3,7 @@
   * Bakery
   * http://www.stereo-type.fr/bakery.html
   */
-@include font-face("Bakery", "/fonts/bakery/bakery", $file-formats: eot ttf otf woff svg);
+@include font-face("Bakery", "#{$-baseurl}/fonts/bakery/bakery", $file-formats: eot ttf otf woff svg);
 
 $bakery-stack: Bakery, cursive;
 @include void(font-add(bakery, $bakery-stack));

@@ -3,6 +3,8 @@
 ---
 @charset "utf-8";
 
+$-baseurl: "{{ site.baseurl }}";
+
 // Import partials from `sass_dir` (defaults to `_sass`)
 @import "imports";
 @import "core";
