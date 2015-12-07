@@ -1,7 +1,9 @@
 <header class="site-header">
 
-  <h1><a class="site-title" href="{{ site.baseurl }}/">{{ site.title }}</a></h1>
+  <h1>{{ site.title_formatted }}<span aria-hidden="true">></span></h1>
   <h2>{{ site.subhead }}</h2>
+
+</header>
 
   <nav>
     <ul>
@@ -12,5 +14,3 @@
       {% endfor %}
     </ul>
   </nav>
-
-</header>
