@@ -1,0 +1,6 @@
+// add Bakery font
+@include font-face("Bakery", "/fonts/bakery/bakery", $file-formats: eot ttf otf woff svg);
+
+$bakery-stack: Bakery, cursive;
+
+@include void(font-add(Bakery, $bakery-stack));

@@ -1,0 +1,70 @@
+// default empty fonts
+// set these with font-add, font-add-theme
+$-fonts: (
+  default: (
+  ),
+);
+
+// adds a theme map to fonts map
+// theme is a theme name
+@function font-add-theme($theme) {
+  @if map-has-key($-fonts, $theme) {
+    @error "`#{$theme}` already exists in $-fonts!";
+  }
+  @else {
+    $-fonts: map-set($-fonts, $theme, ())!global;
+  }
+  @return "";
+}
+
+// adds font to fonts map, or overrides existing font based on $replace
+@function font-set($name, $font, $theme: default, $replace: true) {
+  @if map-has-key($-fonts, $theme) {
+    $font-theme: map-get($-fonts, $theme);
+    @if map-has-key($font-theme, $font) and not $replace {
+      @error "`#{$font}` already exists in `#{$theme}` theme or default theme";
+    }
+    @else {
+      $new-theme-map: map-set($font-theme, $name, $font);
+      $-fonts: map-set($-fonts, '#{$theme}', $new-theme-map) !global;
+    }
+  }
+  @else {
+    @error "`#{$theme}` does not exist";
+  }
+  @return "";
+}
+
+// adds font to fonts map
+// does not allow overriding existing fonts
+@function font-add($name, $font, $theme: default) {
+  @return font-set($name, $font, $theme, false);
+}
+
+// returns font from font map maptching theme
+@function font-get($font, $theme: default) {
+  @if map-has-key($-fonts, $theme) {
+    $font-theme: map-get($-fonts, $theme);
+    @if map-has-key($font-theme, $font) {
+      @return map-get($font-theme, $font);
+    }
+    @else if map-has-key(map-get($-fonts, default), $font) {
+      @return map-get(map-get($-fonts, default), $font);
+    }
+    @else {
+      @error "`#{$font}` does not exist in `#{$theme}` theme or default theme";
+    }
+  }
+  @else {
+    @error "`#{$theme}` does not exist";
+  }
+}
+
+// sugary wrapper on font-get
+@function font($font, $theme: default) {
+  @return font-get($font, $theme);
+}
+
+@mixin font($font, $theme: default) {
+  font-family: font-get($font, $theme);
+}
