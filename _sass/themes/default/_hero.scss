@@ -1,6 +1,6 @@
 header {
   color: swatch(white);
-  background: url("#{$-baseurl}/images/husk_@2x.png") swatch(black) {
+  background: url("#{$-baseurl}/images/husk.png") swatch(black) {
     size: 500px;
   };
 
@@ -18,7 +18,7 @@ header {
       family: font(bakery);
     }
 
-    @include text-background-fill(url("#{$-baseurl}/images/chalk_@2x.png"), swatch(white));
+    @include text-background-fill(url("#{$-baseurl}/images/chalk.png"), swatch(white));
     background-size: 250px;
     padding: 0.1em 0;
   }
