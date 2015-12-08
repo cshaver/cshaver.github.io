@@ -18,7 +18,11 @@ header {
       family: font(bakery);
     }
 
+    // TODO: add javascript image load detection so
+    // that the fallback color is shown until image
+    // is loaded
     @include text-background-fill(url("#{$-baseurl}/images/chalk.png"), swatch(white));
+
     background-size: 250px;
     padding: 0.1em 0;
   }
