@@ -9,15 +9,27 @@
 
     <main>
       <canvas id="canvas" width="500" height="300"></canvas>
-      <button id="button">Redo!</button>
-      <button id="triangleButton">📐Δ📐Δ📐Δ📐Δ📐Δ📐Δ📐Δ!</button>
+      <br>
+      <label for="minPoints">Min Points</label>
+      <input id="minPoints" type="number" value="10"/>
+      <br>
+      <label for="maxPoints">Max Points</label>
+      <input id="maxPoints" type="number" value="100"/>
+      <br>
+      <label for="minEdgePoints">Min Edge Points</label>
+      <input id="minEdgePoints" type="number" value="10"/>
+      <br>
+      <label for="maxEdgePoints">Max Edge Points</label>
+      <input id="maxEdgePoints" type="number" value="100"/>
+      <br>
+      <button id="button" type="submit">Redo!</button>
       {{ content }}
     </main>
 
     {% include footer.html %}
 
-    <script src="scripts/delaunay2.js"></script>
-    <script src="scripts/triangles.js"></script>
+    <script src="{{ "/scripts/delaunay2.js" | prepend: site.baseurl }}"></script>
+    <script src="{{ "/scripts/triangles.js" | prepend: site.baseurl }}"></script>
   </body>
 
 </html>

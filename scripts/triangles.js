@@ -2,38 +2,30 @@
   // see http://paulbourke.net/papers/triangulate/
   'use strict';
 
-  const canvas = document.getElementById('canvas');
-  const ctx = canvas.getContext('2d');
-
-  const button = document.getElementById('button');
-  const triangleButton = document.getElementById('triangleButton');
-
-  const MAX_NUM_POINTS = 20;
-  const MIN_NUM_POINTS = 10;
-  const MIN_NUM_EDGE_POINTS = 3;
-  const MAX_NUM_EDGE_POINTS = 5;
-
-  // hey look a closure
-  // helper function, returns function for
-  // random with pre-set max and min
-  function randomNumberFunction(max, min) {
-    min = min || 0;
-    if (min > max) {
-      var temp = max;
-      max = min;
-      min = temp;
+  class Random {
+    // hey look a closure
+    // helper function, returns function for
+    // random with pre-set max and min
+    static randomNumberFunction(max, min) {
+      min = min || 0;
+      if (min > max) {
+        var temp = max;
+        max = min;
+        min = temp;
+      }
+      return function() {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+      }
     }
-    return function() {
-      return Math.floor(Math.random() * (max - min + 1)) + min;
+
+    // returns a random number
+    // between the max and min
+    static randomBetween(max, min) {
+      min = min || 0;
+      return Random.randomNumberFunction(max, min)();
     }
   }
 
-  // returns a random number
-  // between the max and min
-  function randomBetween(max, min) {
-    min = min || 0;
-    return randomNumberFunction(max, min)();
-  }
 
   /**
    * Represents a triangle
@@ -72,7 +64,23 @@
       ctx.strokeStyle = color || this.color;
       ctx.fillStyle = color || this.color;
       ctx.fill();
+      ctx.stroke();
       ctx.closePath();
+    }
+
+    randomInside() {
+      var r1 = Math.random();
+      var r2 = Math.random();
+      var x = (1 - Math.sqrt(r1)) * this.p1[0] + (Math.sqrt(r1) * (1 - r2)) * this.p2[0] + (Math.sqrt(r1) * r2) * this.p3[0];
+      var y = (1 - Math.sqrt(r1)) * this.p1[1] + (Math.sqrt(r1) * (1 - r2)) * this.p2[1] + (Math.sqrt(r1) * r2) * this.p3[1];
+      return new Point(x, y);
+    }
+
+    centroid() {
+      var x = (this.p1[0] + this.p2[0] + this.p3[0]) / 3;
+      var y = (this.p1[1] + this.p2[1] + this.p3[1]) / 3;
+
+      return new Point(x, y);
     }
 
     toString() {
@@ -136,6 +144,11 @@
       ctx.fillStyle = color || this.color;
       ctx.fill();
       ctx.closePath();
+    }
+
+    canvasColorAtPoint() {
+      var data = ctx.getImageData(this.x, this.y, 1, 1).data;
+      return 'rgba(' + data.slice(0, 4).join(',') + ')';
     }
 
     /**
@@ -206,25 +219,25 @@
     /**
      * @constructor
      */
-    constructor(canvas, min, max, minEdge, maxEdge, colors) {
+    constructor(canvas) {
       this.width = canvas.width;
       this.height = canvas.height;
 
       this.points = [];
       this.pointMap = new PointMap();
-
-      this.numPoints = randomBetween(min, max);
-      this.getNumEdgePoints = randomNumberFunction(minEdge, maxEdge);
     }
 
     clear() {
-      ctx.clearRect(0, 0, this.width, this.height);
+      // ctx.clearRect(0, 0, this.width, this.height);
       this.points = [];
       this.pointMap.clear();
     }
 
     // clear and create a fresh set of random points
-    randomize() {
+    randomize(min, max, minEdge, maxEdge) {
+      this.numPoints = Random.randomBetween(min, max);
+      this.getNumEdgePoints = Random.randomNumberFunction(minEdge, maxEdge);
+
       this.clear();
 
       // add corner and edge points
@@ -268,7 +281,7 @@
         // re-generate the point if it already exists (max 10 times)
         do {
           j++;
-          point = new Point(randomBetween(x, x + width), randomBetween(y, y + height));
+          point = new Point(Random.randomBetween(x, x + width), Random.randomBetween(y, y + height));
         } while (this.pointMap.exists(point) && j < 10);
         if (j < 10) {
           this.points.push(point);
@@ -296,6 +309,13 @@
       this.triangles = this.triangles.map(function(triangle) {
         return new Triangle(triangle[0], triangle[1], triangle[2]);
       });
+
+      this.points = [];
+
+      for (var i = 0; i < this.triangles.length; i++) {
+        this.points.push(this.triangles[i].randomInside());
+        // this.points.push(this.triangles[i].centroid());
+      }
     }
 
     // sorts the points
@@ -322,24 +342,49 @@
     }
 
     render() {
+
       for (var i = 0; i < this.triangles.length; i++) {
-        this.triangles[i].render('rgb(' + randomBetween(0, 255) + ',' + randomBetween(0, 255) + ',' + randomBetween(0, 255) + ')');
+        this.triangles[i].render(this.triangles[i].centroid().canvasColorAtPoint());
+      }
+
+      for (var i = 0; i < this.points.length; i++) {
+        // this.points[i].render();
       }
     }
 
   }
 
-  // lets get this show on the road
-  let prettyDelaunay = new PrettyDelaunay(canvas, MIN_NUM_POINTS, MAX_NUM_POINTS, MIN_NUM_EDGE_POINTS, MAX_NUM_EDGE_POINTS);
+  const canvas = document.getElementById('canvas');
+  const ctx = canvas.getContext('2d');
 
-  prettyDelaunay.randomize();
+  const button = document.getElementById('button');
+
+  const maxInput = document.getElementById('maxPoints');
+  const minInput = document.getElementById('minPoints');
+  const maxEdgeInput = document.getElementById('maxEdgePoints');
+  const minEdgeInput = document.getElementById('minEdgePoints');
+
+  // lets get this show on the road
+  let prettyDelaunay = new PrettyDelaunay(canvas);
+
+  var radgrad = ctx.createRadialGradient(200, 150, 350, 150, 100, 15);
+  radgrad.addColorStop(1, '#c65ca7');
+  radgrad.addColorStop(0.75, '#5c4e93');
+  radgrad.addColorStop(0, '#4b72ba');
+
+  ctx.fillStyle = radgrad;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  prettyDelaunay.randomize(parseInt(minInput.value), parseInt(maxInput.value), parseInt(minEdgeInput.value), parseInt(minEdgeInput.value));
 
   button.addEventListener('click', function() {
-    prettyDelaunay.randomize();
+    ctx.fillStyle = radgrad;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    prettyDelaunay.randomize(parseInt(minInput.value), parseInt(maxInput.value), parseInt(minEdgeInput.value), parseInt(minEdgeInput.value));
   });
 
-  triangleButton.addEventListener('click', function() {
-    prettyDelaunay.damnTriangle();
-  });
+  // triangleButton.addEventListener('click', function() {
+  //   prettyDelaunay.damnTriangle();
+  // });
 
 })();
