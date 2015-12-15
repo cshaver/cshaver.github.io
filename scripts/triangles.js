@@ -148,7 +148,7 @@
 
     canvasColorAtPoint() {
       var data = ctx.getImageData(this.x, this.y, 1, 1).data;
-      return 'rgba(' + data.slice(0, 4).join(',') + ')';
+      return 'rgba(' + Array.prototype.slice.call(data, 0, 4).join(',') + ')';
     }
 
     /**
@@ -383,8 +383,5 @@
     prettyDelaunay.randomize(parseInt(minInput.value), parseInt(maxInput.value), parseInt(minEdgeInput.value), parseInt(minEdgeInput.value));
   });
 
-  // triangleButton.addEventListener('click', function() {
-  //   prettyDelaunay.damnTriangle();
-  // });
-
 })();
+
