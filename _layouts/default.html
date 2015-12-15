@@ -8,11 +8,16 @@
     {% include header.html %}
 
     <main>
-        {{ content }}
+      <canvas id="canvas" width="500" height="300"></canvas>
+      <button id="button">Redo!</button>
+      <button id="triangleButton">📐Δ📐Δ📐Δ📐Δ📐Δ📐Δ📐Δ!</button>
+      {{ content }}
     </main>
 
     {% include footer.html %}
 
+    <script src="scripts/delaunay2.js"></script>
+    <script src="scripts/triangles.js"></script>
   </body>
 
 </html>
