@@ -5,29 +5,69 @@
 
   <body>
 
-    {% include header.html %}
+    <!-- {% include header.html %}
 
     <main>
-      <canvas id="canvas" width="500" height="300"></canvas>
-      <br>
-      <label for="minPoints">Min Points</label>
-      <input id="minPoints" type="number" value="10"/>
-      <br>
-      <label for="maxPoints">Max Points</label>
-      <input id="maxPoints" type="number" value="100"/>
-      <br>
-      <label for="minEdgePoints">Min Edge Points</label>
-      <input id="minEdgePoints" type="number" value="10"/>
-      <br>
-      <label for="maxEdgePoints">Max Edge Points</label>
-      <input id="maxEdgePoints" type="number" value="100"/>
-      <br>
-      <button id="button" type="submit">Redo!</button>
       {{ content }}
     </main>
 
-    {% include footer.html %}
+    {% include footer.html %} -->
+    <div class="canvas-wrapper">
+      <canvas id="canvas" width="500" height="300"></canvas>
+    </div>
+    <form class="form" id="form">
+      <div class="form-row">
+        <label for="minPoints">Min Points</label>
+        <input id="minPoints" type="number" value="10"/>
+      </div>
 
+      <div class="form-row">
+        <label for="maxPoints">Max Points</label>
+        <input id="maxPoints" type="number" value="100"/>
+      </div>
+
+      <div class="form-row">
+        <label for="minEdgePoints">Min Edge Points</label>
+        <input id="minEdgePoints" type="number" value="10"/>
+      </div>
+
+      <div class="form-row">
+        <label for="maxEdgePoints">Max Edge Points</label>
+        <input id="maxEdgePoints" type="number" value="100"/>
+      </div>
+      <br>
+      <fieldset>
+        <h4>Colors:</h4>
+        <div class="form-row">
+          <input type="radio" name="color" value="random" id="colorType1"/>
+          <label for="colorType2">Random</label>
+        </div>
+        <div class="form-row">
+          <input type="radio" name="color" value="choose" id="colorType2" checked />
+          <label for="colorType3">Choose</label>
+        </div>
+        <fieldset>
+          <h5>Custom colors:</h5>
+          <div class="form-row">
+            <label for="color1">Inner color:</label>
+            <input type="color" id="color1" value="#c65ca7">
+          </div>
+
+          <div class="form-row">
+            <label for="color2">Middle color:</label>
+            <input type="color" id="color2" value="#5c4e93">
+          </div>
+
+          <div class="form-row">
+            <label for="color3">Outer color:</label>
+            <input type="color" id="color3" value="#4b72ba">
+          </div>
+        </fieldset>
+      </fieldset>
+      <br>
+      <button id="button" type="submit">Redo!</button>
+      <button id="toggleTriangles" type="submit">Toggle triangles</button>
+    </form>
     <script src="{{ "/scripts/delaunay2.js" | prepend: site.baseurl }}"></script>
     <script src="{{ "/scripts/triangles.js" | prepend: site.baseurl }}"></script>
   </body>

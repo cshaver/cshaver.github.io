@@ -5,6 +5,58 @@
 
 $-baseurl: "{{ site.baseurl }}";
 
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+
+  & > * {
+    z-index: 1;
+    position: relative;
+
+    &.canvas-wrapper {
+      z-index: 0;
+    }
+  }
+}
+
+.canvas-wrapper {
+  position: absolute;
+  background: #4b72ba;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  overflow: hidden;
+}
+
+#canvas {
+  border: 1px solid black;
+}
+
+* + * {
+  margin-top: 0.5em;
+}
+
+.form-row {
+  display: flex;
+  justify-content: space-between;
+}
+
+#colorType2 {
+  & + fieldset {
+    display: none;
+  }
+
+  &:checked + fieldset {
+    display: block;
+  }
+}
+
+
 // Import partials from `sass_dir` (defaults to `_sass`)
 @import "imports";
 @import "core";

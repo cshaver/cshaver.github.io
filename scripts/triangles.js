@@ -24,8 +24,20 @@
       min = min || 0;
       return Random.randomNumberFunction(max, min)();
     }
-  }
 
+    static randomInCircle(radius, ox, oy) {
+      var angle = Math.random() * Math.PI * 2;
+      var rad = Math.sqrt(Math.random()) * radius;
+      var x = ox + rad * Math.cos(angle);
+      var y = oy + rad * Math.sin(angle);
+
+      return new Point(x, y);
+    }
+
+    static randomColor() {
+      return 'rgba(' + Random.randomBetween(255) + ',' + Random.randomBetween(255) + ',' + Random.randomBetween(255) + ', 1)';
+    }
+  }
 
   /**
    * Represents a triangle
@@ -62,6 +74,7 @@
       ctx.lineTo(this.c[0], this.c[1]);
       ctx.closePath();
       ctx.strokeStyle = color || this.color;
+      // ctx.strokeStyle = 'black';
       ctx.fillStyle = color || this.color;
       ctx.fill();
       ctx.stroke();
@@ -83,38 +96,52 @@
       return new Point(x, y);
     }
 
+    // (xMin, xMax, yMin, yMax, 0, this.canvas.width, 0, this.canvas.height);
+    rescalePoints(xA, xB, yA, yB, xC, xD, yC, yD) {
+      // console.log(xA, xB, yA, yB, xC, xD, yC, yD);
+      // scale points from [A, B] to [C, D]
+
+      console.log('old:', this.p1[0], this.a[0]);
+
+      this.p1[0] = this.a[0] = ((this.p1[0] - xA) / (xB - xA)) * xD;
+      this.p1[1] = this.a[1] = ((this.p1[1] - yA) / (yB - yA)) * yD;
+
+      this.p2[0] = this.b[0] = ((this.p2[0] - xA) / (xB - xA)) * xD;
+      this.p2[1] = this.b[1] = ((this.p2[1] - yA) / (yB - yA)) * yD;
+
+      this.p3[0] = this.c[0] = ((this.p3[0] - xA) / (xB - xA)) * xD;
+      this.p3[1] = this.c[1] = ((this.p3[1] - yA) / (yB - yA)) * yD;
+
+      console.log('new: ', this.p1[0], this.p1[0] === this.a[0]);
+
+      // this.p1[0] = this.a[0] = xC + (xD - xC) * ( ( this.p1[0] - xA ) / ( xB - xA ) ); //( 1 - (this.p1[0] - xA) / (xB - xA)) + xD * ( (this.p1[0] - xA) / (xB - xA) );
+      // this.p1[1] = this.a[1] = yC + (yD - yC) * ( ( this.p1[1] - yA ) / ( yB - yA ) ); //( 1 - (this.p1[1] - yA) / (yB - yA)) + yD * ( (this.p1[1] - yA) / (yB - yA) );
+
+      // this.p2[0] = this.a[0] = xC + (xD - xC) * ( ( this.p2[0] - xA ) / ( xB - xA ) ); //( 1 - (this.p2[0] - xA) / (xB - xA)) + xD * ( (this.p2[0] - xA) / (xB - xA) );
+      // this.p2[1] = this.a[1] = yC + (yD - yC) * ( ( this.p2[1] - yA ) / ( yB - yA ) ); //( 1 - (this.p2[1] - yA) / (yB - yA)) + yD * ( (this.p2[1] - yA) / (yB - yA) );
+
+      // this.p3[0] = this.a[0] = xC + (xD - xC) * ( ( this.p3[0] - xA ) / ( xB - xA ) ); //( 1 - (this.p3[0] - xA) / (xB - xA)) + xD * ( (this.p3[0] - xA) / (xB - xA) );
+      // this.p3[1] = this.a[1] = yC + (yD - yC) * ( ( this.p3[1] - yA ) / ( yB - yA ) ); //( 1 - (this.p3[1] - yA) / (yB - yA)) + yD * ( (this.p3[1] - yA) / (yB - yA) );
+    }
+
+    xMin() {
+      return Math.min(this.p1[0], this.p2[0], this.p3[0]);
+    }
+
+    yMin() {
+      return Math.min(this.p1[1], this.p2[1], this.p3[1]);
+    }
+
+    xMax() {
+      return Math.max(this.p1[0], this.p2[0], this.p3[0]);
+    }
+
+    yMax() {
+      return Math.max(this.p1[1], this.p2[1], this.p3[1]);
+    }
+
     toString() {
       return '(' + this.p1[0] + ',' + this.p1[1] + '), (' + this.p2[0] + ',' + this.p2[1] + '), (' + this.p3[0] + ',' + this.p3[1] + ')';
-    }
-  }
-
-  /**
-   * Represents a edge
-   * @class
-   */
-  class Edge {
-    /**
-     * Edge consists of two points
-     * @constructor
-     * @param {Number[]} a
-     * @param {Number[]} b
-     */
-    constructor(a, b) {
-      this.p1 = this.a = a;
-      this.p2 = this.b = b;
-
-      this.color = 'black';
-    }
-
-    // draw the edge
-    render(color) {
-      ctx.beginPath();
-      ctx.moveTo(this.a[0], this.a[1]);
-      ctx.lineTo(this.b[0], this.b[1]);
-      ctx.closePath();
-      ctx.strokeStyle = color || this.color;
-      ctx.stroke();
-      ctx.closePath();
     }
   }
 
@@ -164,6 +191,14 @@
 
     getCoords() {
       return [this.x, this.y];
+    }
+
+    rescale(xA, xB, yA, yB, xC, xD, yC, yD) {
+      // scale points from [A, B] to [C, D]
+
+      this.x = ((this.x - xA) / (xB - xA)) * xD;
+      this.y = ((this.y - yA) / (yB - yA)) * yD;
+
     }
   }
 
@@ -220,21 +255,23 @@
      * @constructor
      */
     constructor(canvas) {
-      this.width = canvas.width;
-      this.height = canvas.height;
-
+      this.canvas = canvas;
+      this.resizeCanvas();
       this.points = [];
       this.pointMap = new PointMap();
     }
 
     clear() {
-      // ctx.clearRect(0, 0, this.width, this.height);
       this.points = [];
       this.pointMap.clear();
     }
 
     // clear and create a fresh set of random points
-    randomize(min, max, minEdge, maxEdge) {
+    randomize(min, max, minEdge, maxEdge, colors) {
+      this.colors = colors;
+
+      this.resizeCanvas();
+
       this.numPoints = Random.randomBetween(min, max);
       this.getNumEdgePoints = Random.randomNumberFunction(minEdge, maxEdge);
 
@@ -248,6 +285,8 @@
       this.generatePoints(this.numPoints, 1, 1, this.width - 1, this.height - 1);
 
       this.triangulate();
+
+      this.prettify();
 
       this.render();
     }
@@ -309,13 +348,76 @@
       this.triangles = this.triangles.map(function(triangle) {
         return new Triangle(triangle[0], triangle[1], triangle[2]);
       });
+    }
 
+    // create points, colors
+    prettify() {
       this.points = [];
 
       for (var i = 0; i < this.triangles.length; i++) {
         this.points.push(this.triangles[i].randomInside());
         // this.points.push(this.triangles[i].centroid());
       }
+
+      ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+      /**
+        * create a nice-looking but reasonably random gradient:
+        * randomize the first circle
+        * the second circle should be inside the first circle,
+        * so we generate a point (origin2) inside cirle1
+        * then calculate the dist between origin2 and the circumfrence of circle1
+        * circle2's radius can be between 0 and this dist
+        */
+
+      // helper random functions
+      var randomCanvasX = Random.randomNumberFunction(Math.sqrt(canvas.width), canvas.width - Math.sqrt(canvas.width));
+      var randomCanvasY = Random.randomNumberFunction(Math.sqrt(canvas.height), canvas.height - Math.sqrt(canvas.height));
+      var randomCanvasRadius = Random.randomNumberFunction(Math.max(canvas.height, canvas.width)/2, Math.max(canvas.height, canvas.width));
+      // generate circle1 origin and radius
+      var x0 = randomCanvasX();
+      var y0 = randomCanvasY();
+      var r0 = randomCanvasRadius();
+
+      // find a random point inside circle1
+      // this is the origin of circle 2
+      var pointInCircle = Random.randomInCircle(r0*.09, x0, y0);
+
+      // grab the x/y coords
+      var x1 = pointInCircle.x;
+      var y1 = pointInCircle.y;
+
+      // find distance between the point and the circumfrience of circle1
+      var vX = x1 - x0;
+      var vY = y1 - y0;
+      var magV = Math.sqrt(vX*vX + vY*vY);
+      var aX = x0 + vX / magV * r0;
+      var aY = y0 + vY / magV * r0;
+
+      var dist = Math.sqrt((x1 - aX) * (x1 - aX) + (y1 - aY) * (y1 - aY));
+
+      // generate the radius of circle2 based on this distance
+      var r1 = Random.randomBetween(1, Math.sqrt(dist));
+
+      this.radgrad = ctx.createRadialGradient(x0, y0, r0, x1, y1, r1);
+
+      console.log('circle1', x0, y0, r0);
+      console.log('circle2', x1, y1, r1);
+
+      var colorStop = Random.randomBetween(2, 8)/10;
+      console.log('colorStop', colorStop);
+      this.radgrad.addColorStop(1, this.colors[0]);
+      this.radgrad.addColorStop(colorStop, this.colors[1]);
+      this.radgrad.addColorStop(0, this.colors[2]);
+
+      this.canvas.parentElement.style.backgroundColor = this.colors[2];
+
+      // ctx.arc(x0, y0, r0, 0, Math.PI*2, true);
+      // ctx.strokeStyle = 'white';
+      // ctx.stroke();
+      // ctx.arc(x1, y1, r1, 0, Math.PI*2, true);
+      // ctx.strokeStyle = 'black';
+      // ctx.stroke();
     }
 
     // sorts the points
@@ -341,46 +443,170 @@
       });
     }
 
-    render() {
+    // size the canvas to the size of its parent
+    // sort of a hack for a responsive canvas
+    resizeCanvas() {
+      var parent = this.canvas.parentElement;
+      this.canvas.width = this.width = parent.offsetWidth;
+      this.canvas.height = this.height = parent.offsetHeight;
+    }
+
+    // this function is super broken and messy
+    // now that i've tried to fix it four times its impossile to read
+    resizePoints() {
+
+      // var previousWidth = this.width;
+      // var previousHeight = this.height;
+
+      this.resizeCanvas();
+
+      // console.log(previousWidth, 'to', this.width, previousHeight, 'to', this.height);
+
+      var xMin = Number.MAX_VALUE;
+      var xMax = 0;
+      var yMin = Number.MAX_VALUE;
+      var yMax = 0;
 
       for (var i = 0; i < this.triangles.length; i++) {
-        this.triangles[i].render(this.triangles[i].centroid().canvasColorAtPoint());
+        xMin = Math.min(this.triangles[i].xMin(), xMin);
+        xMax = Math.max(this.triangles[i].xMax(),xMax);
+        yMin = Math.min(this.triangles[i].yMin(), yMin);
+        yMax = Math.max(this.triangles[i].yMax(),yMax);
       }
 
+      console.log(xMin, xMax, yMin, yMax);
+
+      // remap all points and triangles to new width / height
       for (var i = 0; i < this.points.length; i++) {
-        // this.points[i].render();
+        this.points[i].rescale(xMin, xMax, yMin, yMax, 0, this.canvas.width, 0, this.canvas.height);
       }
+
+      for (var i = 0; i < this.triangles.length; i++) {
+        this.triangles[i].rescalePoints(xMin, xMax, yMin, yMax, 0, this.canvas.width, 0, this.canvas.height);
+      }
+
+      this.render();
+    }
+
+    render(showTriangles) {
+      ctx.fillStyle = this.radgrad;
+      ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+      if (typeof showTriangles === 'undefined') {
+        showTriangles = true;
+      }
+
+      if (showTriangles) {
+        for (var i = 0; i < this.triangles.length; i++) {
+          this.triangles[i].render(this.triangles[i].centroid().canvasColorAtPoint());
+        }
+      }
+
+      // for (var i = 0; i < this.points.length; i++) {
+      //   this.points[i].render();
+      // }
     }
 
   }
 
+  // set up variables for canvas, inputs, etc
   const canvas = document.getElementById('canvas');
   const ctx = canvas.getContext('2d');
 
   const button = document.getElementById('button');
+  const toggleTrianglesButton = document.getElementById('toggleTriangles');
 
+  const form = document.getElementById('form');
   const maxInput = document.getElementById('maxPoints');
   const minInput = document.getElementById('minPoints');
   const maxEdgeInput = document.getElementById('maxEdgePoints');
   const minEdgeInput = document.getElementById('minEdgePoints');
 
+  var minPoints, maxPoints, minEdgePoints, maxEdgePoints, colors;
+
+  var showTriangles = true;
+
   // lets get this show on the road
   let prettyDelaunay = new PrettyDelaunay(canvas);
 
-  var radgrad = ctx.createRadialGradient(200, 150, 350, 150, 100, 15);
-  radgrad.addColorStop(1, '#c65ca7');
-  radgrad.addColorStop(0.75, '#5c4e93');
-  radgrad.addColorStop(0, '#4b72ba');
+  // initial generation
+  runDelaunay();
 
-  ctx.fillStyle = radgrad;
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  /**
+   * util functions
+   */
 
-  prettyDelaunay.randomize(parseInt(minInput.value), parseInt(maxInput.value), parseInt(minEdgeInput.value), parseInt(minEdgeInput.value));
+  // get options and re-randomize
+  function runDelaunay() {
+    getOptions();
+    prettyDelaunay.randomize(minPoints, maxPoints, minEdgePoints, maxEdgePoints, colors);
+  }
 
+  // get options from input fields
+  function getOptions() {
+    minPoints = parseInt(minInput.value);
+    maxPoints = parseInt(maxInput.value);
+    minEdgePoints = parseInt(minEdgeInput.value);
+    maxEdgePoints = parseInt(maxEdgeInput.value);
+
+    colors = [];
+
+    if (document.getElementById('colorType1').checked) {
+      // generate random colors
+      for (var i = 0; i < 3; i++) {
+        var color = Random.randomColor();
+        colors.push(color);
+      }
+    }
+    else {
+      // use the ones in the inputs
+      colors.push(document.getElementById('color1').value);
+      colors.push(document.getElementById('color2').value);
+      colors.push(document.getElementById('color3').value);
+    }
+  }
+
+ function throttle(type, name, obj) {
+    obj = obj || window;
+    var running = false;
+    var func = function() {
+      if (running) { return; }
+      running = true;
+      requestAnimationFrame(function() {
+        obj.dispatchEvent(new CustomEvent(name));
+        running = false;
+      });
+    };
+    obj.addEventListener(type, func);
+  };
+
+  /* init - you can init any event */
+  throttle('resize', 'optimizedResize');
+
+  /**
+   * set up events
+   */
+
+  // click the button to regen
   button.addEventListener('click', function() {
-    ctx.fillStyle = radgrad;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    prettyDelaunay.randomize(parseInt(minInput.value), parseInt(maxInput.value), parseInt(minEdgeInput.value), parseInt(minEdgeInput.value));
+    runDelaunay();
+  });
+
+  // click the button to regen
+  toggleTrianglesButton.addEventListener('click', function() {
+    showTriangles = !showTriangles;
+    prettyDelaunay.render(showTriangles);
+  });
+
+  // regen on resize
+  window.addEventListener('optimizedResize', function() {
+    runDelaunay();
+  });
+
+  // dont do anything on form submit
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    return false;
   });
 
 })();
