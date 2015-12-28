@@ -45,23 +45,16 @@
    */
   class Triangle {
     /**
-     * Triangle consists of three points
-     * and (max) three adjacent triangles
+     * Triangle consists of three Points
      * @constructor
-     * @param {Number[]} a
-     * @param {Number[]} b
-     * @param {Number[]} c
-     * @param {Triangle} ta
-     * @param {Triangle} tb
-     * @param {Triangle} tc
+     * @param {Object} a
+     * @param {Object} b
+     * @param {Object} c
      */
-    constructor(a, b, c, ta, tb, tc) {
+    constructor(a, b, c) {
       this.p1 = this.a = a;
       this.p2 = this.b = b;
       this.p3 = this.c = c;
-      this.ta = ta || null;
-      this.tb = tb || null;
-      this.tc = tc || null;
 
       this.color = 'black';
     }
@@ -69,12 +62,11 @@
     // draw the triangle
     render(color) {
       ctx.beginPath();
-      ctx.moveTo(this.a[0], this.a[1]);
-      ctx.lineTo(this.b[0], this.b[1]);
-      ctx.lineTo(this.c[0], this.c[1]);
+      ctx.moveTo(this.a.x, this.a.y);
+      ctx.lineTo(this.b.x, this.b.y);
+      ctx.lineTo(this.c.x, this.c.y);
       ctx.closePath();
-      ctx.strokeStyle = color || this.color;
-      // ctx.strokeStyle = 'black';
+      ctx.strokeStyle = color || this.colo
       ctx.fillStyle = color || this.color;
       ctx.fill();
       ctx.stroke();
@@ -84,64 +76,51 @@
     randomInside() {
       var r1 = Math.random();
       var r2 = Math.random();
-      var x = (1 - Math.sqrt(r1)) * this.p1[0] + (Math.sqrt(r1) * (1 - r2)) * this.p2[0] + (Math.sqrt(r1) * r2) * this.p3[0];
-      var y = (1 - Math.sqrt(r1)) * this.p1[1] + (Math.sqrt(r1) * (1 - r2)) * this.p2[1] + (Math.sqrt(r1) * r2) * this.p3[1];
+      var x = (1 - Math.sqrt(r1)) * this.p1.x + (Math.sqrt(r1) * (1 - r2)) * this.p2.x + (Math.sqrt(r1) * r2) * this.p3.x;
+      var y = (1 - Math.sqrt(r1)) * this.p1.y + (Math.sqrt(r1) * (1 - r2)) * this.p2.y + (Math.sqrt(r1) * r2) * this.p3.y;
       return new Point(x, y);
     }
 
     centroid() {
-      var x = (this.p1[0] + this.p2[0] + this.p3[0]) / 3;
-      var y = (this.p1[1] + this.p2[1] + this.p3[1]) / 3;
+      var x = (this.p1.x + this.p2.x + this.p3.x) / 3;
+      var y = (this.p1.y + this.p2.y + this.p3.y) / 3;
 
       return new Point(x, y);
     }
 
-    // (xMin, xMax, yMin, yMax, 0, this.canvas.width, 0, this.canvas.height);
+    // scale points from [A, B] to [C, D]
+    // xA => old x min, xB => old x max
+    // yA => old y min, yB => old y max
+    // xC => new x min, xD => new x max
+    // yC => new y min, yD => new y max
     rescalePoints(xA, xB, yA, yB, xC, xD, yC, yD) {
-      // console.log(xA, xB, yA, yB, xC, xD, yC, yD);
-      // scale points from [A, B] to [C, D]
+      this.p1.rescale(xA, xB, yA, yB, xC, xD, yC, yD);
+      this.p2.rescale(xA, xB, yA, yB, xC, xD, yC, yD);
+      this.p3.rescale(xA, xB, yA, yB, xC, xD, yC, yD);
+    }
 
-      console.log('old:', this.p1[0], this.a[0]);
-
-      this.p1[0] = this.a[0] = ((this.p1[0] - xA) / (xB - xA)) * xD;
-      this.p1[1] = this.a[1] = ((this.p1[1] - yA) / (yB - yA)) * yD;
-
-      this.p2[0] = this.b[0] = ((this.p2[0] - xA) / (xB - xA)) * xD;
-      this.p2[1] = this.b[1] = ((this.p2[1] - yA) / (yB - yA)) * yD;
-
-      this.p3[0] = this.c[0] = ((this.p3[0] - xA) / (xB - xA)) * xD;
-      this.p3[1] = this.c[1] = ((this.p3[1] - yA) / (yB - yA)) * yD;
-
-      console.log('new: ', this.p1[0], this.p1[0] === this.a[0]);
-
-      // this.p1[0] = this.a[0] = xC + (xD - xC) * ( ( this.p1[0] - xA ) / ( xB - xA ) ); //( 1 - (this.p1[0] - xA) / (xB - xA)) + xD * ( (this.p1[0] - xA) / (xB - xA) );
-      // this.p1[1] = this.a[1] = yC + (yD - yC) * ( ( this.p1[1] - yA ) / ( yB - yA ) ); //( 1 - (this.p1[1] - yA) / (yB - yA)) + yD * ( (this.p1[1] - yA) / (yB - yA) );
-
-      // this.p2[0] = this.a[0] = xC + (xD - xC) * ( ( this.p2[0] - xA ) / ( xB - xA ) ); //( 1 - (this.p2[0] - xA) / (xB - xA)) + xD * ( (this.p2[0] - xA) / (xB - xA) );
-      // this.p2[1] = this.a[1] = yC + (yD - yC) * ( ( this.p2[1] - yA ) / ( yB - yA ) ); //( 1 - (this.p2[1] - yA) / (yB - yA)) + yD * ( (this.p2[1] - yA) / (yB - yA) );
-
-      // this.p3[0] = this.a[0] = xC + (xD - xC) * ( ( this.p3[0] - xA ) / ( xB - xA ) ); //( 1 - (this.p3[0] - xA) / (xB - xA)) + xD * ( (this.p3[0] - xA) / (xB - xA) );
-      // this.p3[1] = this.a[1] = yC + (yD - yC) * ( ( this.p3[1] - yA ) / ( yB - yA ) ); //( 1 - (this.p3[1] - yA) / (yB - yA)) + yD * ( (this.p3[1] - yA) / (yB - yA) );
+    getPoints() {
+      return [this.p1, this.p2, this.p3];
     }
 
     xMin() {
-      return Math.min(this.p1[0], this.p2[0], this.p3[0]);
+      return Math.min(this.p1.x, this.p2.x, this.p3.x);
     }
 
     yMin() {
-      return Math.min(this.p1[1], this.p2[1], this.p3[1]);
+      return Math.min(this.p1.y, this.p2.y, this.p3.y);
     }
 
     xMax() {
-      return Math.max(this.p1[0], this.p2[0], this.p3[0]);
+      return Math.max(this.p1.x, this.p2.x, this.p3.x);
     }
 
     yMax() {
-      return Math.max(this.p1[1], this.p2[1], this.p3[1]);
+      return Math.max(this.p1.y, this.p2.y, this.p3.y);
     }
 
     toString() {
-      return '(' + this.p1[0] + ',' + this.p1[1] + '), (' + this.p2[0] + ',' + this.p2[1] + '), (' + this.p3[0] + ',' + this.p3[1] + ')';
+      return '(' + this.p1.x + ',' + this.p1.y + '), (' + this.p2.x + ',' + this.p2.y + '), (' + this.p3.x + ',' + this.p3.y + ')';
     }
   }
 
@@ -153,15 +132,22 @@
     /**
      * Point consists x and y
      * @constructor
+     * accepts either:
      * @param {Number} x
      * @param {Number} y
-     * @param {String} color
+     * or:
+     * @param {Number[]} x
+     * where x is length-2 array
      */
-    constructor(x, y, color) {
+    constructor(x, y) {
+      if (Array.isArray(x)) {
+        y = x[1];
+        x = x[0];
+      }
       this.x = x;
       this.y = y;
       this.radius = 1;
-      this.color = color || 'black';
+      this.color = 'black';
     }
 
     // draw the point
@@ -173,6 +159,7 @@
       ctx.closePath();
     }
 
+    // grab the color of the canvas at the point
     canvasColorAtPoint() {
       var data = ctx.getImageData(this.x, this.y, 1, 1).data;
       return 'rgba(' + Array.prototype.slice.call(data, 0, 4).join(',') + ')';
@@ -181,24 +168,33 @@
     /**
      * converts to string
      * returns something like:
-     * "X,Y"
+     * "(X,Y)"
      * @returns {String}
      */
     toString() {
-      return this.x + ','
-      this.y;
+      return '(' + this.x + ',' + this.y + ')' ;
     }
 
     getCoords() {
       return [this.x, this.y];
     }
 
+    // scale points from [A, B] to [C, D]
+    // xA => old x min, xB => old x max
+    // yA => old y min, yB => old y max
+    // xC => new x min, xD => new x max
+    // yC => new y min, yD => new y max
     rescale(xA, xB, yA, yB, xC, xD, yC, yD) {
-      // scale points from [A, B] to [C, D]
+      // NewValue = (((OldValue - OldMin) * NewRange) / OldRange) + NewMin
 
-      this.x = ((this.x - xA) / (xB - xA)) * xD;
-      this.y = ((this.y - yA) / (yB - yA)) * yD;
+      var xOldRange = xB - xA;
+      var yOldRange = yB - yA;
 
+      var xNewRange = xD - xC;
+      var yNewRange = yD - yC;
+
+      this.x = (((this.x - xA) * xNewRange) / xOldRange) + xC;
+      this.y = (((this.y - yA) * yNewRange) / yOldRange) + yC;
     }
   }
 
@@ -254,15 +250,26 @@
     /**
      * @constructor
      */
-    constructor(canvas) {
+    constructor(canvas, options) {
+      // merge given options with defaults
+      this.options = Object.assign({}, this.defaults(), (options || {}));
+
       this.canvas = canvas;
       this.resizeCanvas();
       this.points = [];
       this.pointMap = new PointMap();
     }
 
+    defaults() {
+      return {
+        showTriangles: true,
+        debug: false,
+      }
+    }
+
     clear() {
       this.points = [];
+      this.triangles = [];
       this.pointMap.clear();
     }
 
@@ -278,11 +285,12 @@
       this.clear();
 
       // add corner and edge points
-      this.cornerPoints();
-      this.edgePoints();
+      this.generateCornerPoints();
+      this.generateEdgePoints();
+
       // add some random points in the middle field,
       // excluding edges and corners
-      this.generatePoints(this.numPoints, 1, 1, this.width - 1, this.height - 1);
+      this.generateRandomPoints(this.numPoints, 1, 1, this.width - 1, this.height - 1);
 
       this.triangulate();
 
@@ -292,7 +300,7 @@
     }
 
     // add points in the corners
-    cornerPoints() {
+    generateCornerPoints() {
       this.points.push(new Point(0, 0));
       this.points.push(new Point(0, this.height));
       this.points.push(new Point(this.width, 0));
@@ -300,24 +308,24 @@
     }
 
     // add points on the edges
-    edgePoints() {
+    generateEdgePoints() {
       // left edge
-      this.generatePoints(this.getNumEdgePoints(), 0, 0, 0, this.height);
+      this.generateRandomPoints(this.getNumEdgePoints(), 0, 0, 0, this.height);
       // right edge
-      this.generatePoints(this.getNumEdgePoints(), this.width, 0, 0, this.height);
+      this.generateRandomPoints(this.getNumEdgePoints(), this.width, 0, 0, this.height);
       // bottom edge
-      this.generatePoints(this.getNumEdgePoints(), 0, this.height, this.width, 1);
+      this.generateRandomPoints(this.getNumEdgePoints(), 0, this.height, this.width, 0);
       // top edge
-      this.generatePoints(this.getNumEdgePoints(), 0, 0, this.width, 0);
+      this.generateRandomPoints(this.getNumEdgePoints(), 0, 0, this.width, 0);
     }
 
     // randomly generate some points
-    generatePoints(numPoints, x, y, width, height) {
+    generateRandomPoints(numPoints, x, y, width, height) {
       for (var i = 0; i < numPoints; i++) {
         var point;
         var j = 0;
         // generate a new point with random coords
-        // re-generate the point if it already exists (max 10 times)
+        // re-generate the point if it already exists in pointmap (max 10 times)
         do {
           j++;
           point = new Point(Random.randomBetween(x, x + width), Random.randomBetween(y, y + height));
@@ -329,14 +337,26 @@
       }
     }
 
+    // use the Delaunay algorithm to make
+    // triangles out of our random points
     triangulate() {
       this.triangles = [];
 
+      // map point objects to length-2 arrays
       var vertices = this.points.map(function(point) {
-        return [point.x, point.y];
+        return point.getCoords();
       });
+
+      // vertices is now an array such as:
+      // [ [p1x, p1y], [p2x, p2y], [p3x, p3y], ... ]
+
+      // do the algorithm
       var triangulated = Delaunay.triangulate(vertices);
 
+      // returns 1 dimensional array arranged in triples such as:
+      // [ t1a, t1b, t1c, t2a, t2b, t2c,.... ]
+      // where t1a, etc are indeces in the vertices array
+      // turn that into array of triangle points
       for (var i = 0; i < triangulated.length; i += 3) {
         var arr = [];
         arr.push(vertices[triangulated[i]]);
@@ -345,24 +365,21 @@
         this.triangles.push(arr);
       }
 
+      // map to array of Triangle objects
       this.triangles = this.triangles.map(function(triangle) {
-        return new Triangle(triangle[0], triangle[1], triangle[2]);
+        return new Triangle(new Point(triangle[0]),
+                            new Point(triangle[1]),
+                            new Point(triangle[2]));
       });
     }
 
     // create points, colors
     prettify() {
-      this.points = [];
-
-      for (var i = 0; i < this.triangles.length; i++) {
-        this.points.push(this.triangles[i].randomInside());
-        // this.points.push(this.triangles[i].centroid());
-      }
-
+      // empty the canvas
       ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
       /**
-        * create a nice-looking but reasonably random gradient:
+        * create a nice-looking but somewhat random gradient:
         * randomize the first circle
         * the second circle should be inside the first circle,
         * so we generate a point (origin2) inside cirle1
@@ -374,6 +391,7 @@
       var randomCanvasX = Random.randomNumberFunction(Math.sqrt(canvas.width), canvas.width - Math.sqrt(canvas.width));
       var randomCanvasY = Random.randomNumberFunction(Math.sqrt(canvas.height), canvas.height - Math.sqrt(canvas.height));
       var randomCanvasRadius = Random.randomNumberFunction(Math.max(canvas.height, canvas.width)/2, Math.max(canvas.height, canvas.width));
+
       // generate circle1 origin and radius
       var x0 = randomCanvasX();
       var y0 = randomCanvasY();
@@ -388,6 +406,7 @@
       var y1 = pointInCircle.y;
 
       // find distance between the point and the circumfrience of circle1
+      // the radius of the second circle will be a function of this distance
       var vX = x1 - x0;
       var vY = y1 - y0;
       var magV = Math.sqrt(vX*vX + vY*vY);
@@ -399,19 +418,19 @@
       // generate the radius of circle2 based on this distance
       var r1 = Random.randomBetween(1, Math.sqrt(dist));
 
+      // create the radial gradient based on the circles' radii and origins
       this.radgrad = ctx.createRadialGradient(x0, y0, r0, x1, y1, r1);
 
-      console.log('circle1', x0, y0, r0);
-      console.log('circle2', x1, y1, r1);
-
+      // random but nice looking color stop
       var colorStop = Random.randomBetween(2, 8)/10;
-      console.log('colorStop', colorStop);
+
       this.radgrad.addColorStop(1, this.colors[0]);
       this.radgrad.addColorStop(colorStop, this.colors[1]);
       this.radgrad.addColorStop(0, this.colors[2]);
 
       this.canvas.parentElement.style.backgroundColor = this.colors[2];
 
+      // draws the circles that define the gradients
       // ctx.arc(x0, y0, r0, 0, Math.PI*2, true);
       // ctx.strokeStyle = 'white';
       // ctx.stroke();
@@ -444,24 +463,20 @@
     }
 
     // size the canvas to the size of its parent
-    // sort of a hack for a responsive canvas
+    // makes the canvas 'responsive'
     resizeCanvas() {
       var parent = this.canvas.parentElement;
       this.canvas.width = this.width = parent.offsetWidth;
       this.canvas.height = this.height = parent.offsetHeight;
     }
 
-    // this function is super broken and messy
-    // now that i've tried to fix it four times its impossile to read
-    resizePoints() {
-
-      // var previousWidth = this.width;
-      // var previousHeight = this.height;
+    // moves points/traingles based on new size of canvas
+    rescale() {
+      console.log('Rescaling...');
 
       this.resizeCanvas();
 
-      // console.log(previousWidth, 'to', this.width, previousHeight, 'to', this.height);
-
+      // calc old max/min
       var xMin = Number.MAX_VALUE;
       var xMax = 0;
       var yMin = Number.MAX_VALUE;
@@ -474,7 +489,14 @@
         yMax = Math.max(this.triangles[i].yMax(),yMax);
       }
 
-      console.log(xMin, xMax, yMin, yMax);
+      console.table([{ xMin, xMax, yMin, yMax }]);
+
+      console.table([{
+        newXMin: 0,
+        newXMax: this.canvas.width,
+        newYMin: 0,
+        newYMax: this.canvas.height,
+      }])
 
       // remap all points and triangles to new width / height
       for (var i = 0; i < this.points.length; i++) {
@@ -486,25 +508,42 @@
       }
 
       this.render();
+
+      console.log('Finished rescaling!');
     }
 
-    render(showTriangles) {
+    toggleTriangles() {
+      this.options.showTriangles = !this.options.showTriangles;
+      this.render();
+    }
+
+    render() {
+      this.renderGradient();
+
+      if (this.options.showTriangles) {
+        this.renderTriangles();
+      }
+
+      // this.renderPoints();
+    }
+
+    renderGradient() {
       ctx.fillStyle = this.radgrad;
       ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    }
 
-      if (typeof showTriangles === 'undefined') {
-        showTriangles = true;
+    renderTriangles() {
+      for (var i = 0; i < this.triangles.length; i++) {
+        // the color is determined by grabbing the color of the canvas
+        // (where we drew the gradient) at the center of the triangle
+        this.triangles[i].render(this.triangles[i].centroid().canvasColorAtPoint());
       }
+    }
 
-      if (showTriangles) {
-        for (var i = 0; i < this.triangles.length; i++) {
-          this.triangles[i].render(this.triangles[i].centroid().canvasColorAtPoint());
-        }
+    renderPoints() {
+      for (var i = 0; i < this.points.length; i++) {
+        this.points[i].render();
       }
-
-      // for (var i = 0; i < this.points.length; i++) {
-      //   this.points[i].render();
-      // }
     }
 
   }
@@ -523,8 +562,6 @@
   const minEdgeInput = document.getElementById('minEdgePoints');
 
   var minPoints, maxPoints, minEdgePoints, maxEdgePoints, colors;
-
-  var showTriangles = true;
 
   // lets get this show on the road
   let prettyDelaunay = new PrettyDelaunay(canvas);
@@ -594,13 +631,12 @@
 
   // click the button to regen
   toggleTrianglesButton.addEventListener('click', function() {
-    showTriangles = !showTriangles;
-    prettyDelaunay.render(showTriangles);
+    prettyDelaunay.toggleTriangles();
   });
 
   // regen on resize
   window.addEventListener('optimizedResize', function() {
-    runDelaunay();
+    prettyDelaunay.rescale();
   });
 
   // dont do anything on form submit
@@ -611,3 +647,15 @@
 
 })();
 
+// TODO
+// Debug mode for drawing gradient circles,
+// triangle centers, etc
+// Option to isolate regen
+//   - gradient only
+//   - color only
+//   - points/triangles only
+
+// figure out what to do on resize
+//  - regen triangles, but not gradient?
+//  - or just fix linear scaling
+//
