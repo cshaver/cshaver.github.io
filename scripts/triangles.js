@@ -2,6 +2,11 @@
   // see http://paulbourke.net/papers/triangulate/
   'use strict';
 
+  var triangles = 0;
+  var edges = 0;
+
+  var canvasColor = 0;
+
   class Random {
     // hey look a closure
     // helper function, returns function for
@@ -64,13 +69,13 @@
     }
 
     // draw the triangle
-    render(ctx, color) {
+    render(ctx, color, edgeColor) {
       ctx.beginPath();
       ctx.moveTo(this.a.x, this.a.y);
       ctx.lineTo(this.b.x, this.b.y);
       ctx.lineTo(this.c.x, this.c.y);
       ctx.closePath();
-      ctx.strokeStyle = color || this.color;
+      ctx.strokeStyle = edgeColor || color || this.color;
       ctx.fillStyle = color || this.color;
       ctx.fill();
       ctx.stroke();
@@ -97,15 +102,25 @@
       return new Point(x, y);
     }
 
-    colorAtCentroid() {
-      return this.centroid().canvasColorAtPoint();
+    colorAtCentroid(imageData) {
+      var a = performance.now();
+      var color = this.centroid().canvasColorAtPoint(imageData);
+      var b = performance.now();
+      triangles += (b-a);
+      return color;
     }
 
     centroid() {
-      var x = (this.p1.x + this.p2.x + this.p3.x) / 3;
-      var y = (this.p1.y + this.p2.y + this.p3.y) / 3;
+      if (this._centroid) {
+        return this._centroid;
+      }
+      else {
+        var x = Math.round((this.p1.x + this.p2.x + this.p3.x) / 3);
+        var y = Math.round((this.p1.y + this.p2.y + this.p3.y) / 3);
+        this._centroid = new Point(x, y);
 
-      return new Point(x, y);
+        return this._centroid;
+      }
     }
 
     // scale points from [A, B] to [C, D]
@@ -117,6 +132,7 @@
       this.p1.rescale(xA, xB, yA, yB, xC, xD, yC, yD);
       this.p2.rescale(xA, xB, yA, yB, xC, xD, yC, yD);
       this.p3.rescale(xA, xB, yA, yB, xC, xD, yC, yD);
+      this.centroid();
     }
 
     getPoints() {
@@ -179,11 +195,26 @@
       ctx.closePath();
     }
 
-    // grab the color of the canvas at the point
-    canvasColorAtPoint() {
-      var data = ctx.getImageData(this.x, this.y, 1, 1).data;
+    setColor(color) {
+      this.color = color || this.canvasColorAtPoint();
+    }
 
-      return rgbToHsla(Array.prototype.slice.call(data, 0, 4));
+    // grab the color of the canvas at the point
+    canvasColorAtPoint(imageData) {
+      // console.log(imageData);
+      var a = performance.now();
+      if (!this._canvasColor) {
+        // imageData array is flat, goes by rows then cols, four values per pixel
+        var idx = (Math.floor(this.y) * imageData.width * 4) + (Math.floor(this.x) * 4);
+        this._canvasColor = rgbToHsla(Array.prototype.slice.call(imageData.data, idx, idx + 4));
+      }
+      else {
+        return this._canvasColor;
+      }
+
+      var b = performance.now();
+      canvasColor += (b-a);
+      return this._canvasColor;
     }
 
     /**
@@ -198,6 +229,12 @@
 
     getCoords() {
       return [this.x, this.y];
+    }
+
+    // distance to another point
+    getDistanceTo(point) {
+      // √(x2−x1)2+(y2−y1)2
+      return Math.sqrt(Math.pow(this.x - point.x, 2) + Math.pow(this.y - point.y, 2));
     }
 
     // scale points from [A, B] to [C, D]
@@ -282,6 +319,22 @@
       this.points = [];
       this.colors = ['white', 'white', 'white']
       this.pointMap = new PointMap();
+
+      this.mousePosition = false;
+
+      if (this.options.hover) {
+        this.createShadowCanvas();
+
+        this.canvas.addEventListener('mousemove', (e) => {
+          var rect = canvas.getBoundingClientRect();
+          this.mousePosition = new Point(e.clientX - rect.left, e.clientY - rect.top);
+          // this.mousePosition.render(this.ctx);
+        }, false);
+
+        this.canvas.addEventListener('mouseout', (e) => {
+          this.mousePosition = false;
+        }, false);
+      }
     }
 
     defaults() {
@@ -294,17 +347,15 @@
         edgeColor: function(color) {
           color = color.split(',');
           var lightness = parseInt(color[2]);
-          if (lightness > 50) {
-            lightness *= 0.75;
-          }
-          else {
-            lightness *= 1.25;
-          }
+          lightness = (lightness + 200 - lightness*2) / 3;
           color[2] = lightness + '%';
-          color[3] = 0.3;
+          color[3] = 0.25;
           return color.join(',');
         },
+        onDarkBackground: function(color) { return; },
+        onLightBackground: function(color) { return; },
         resizeMode: 'scalePoints',
+        hover: true,
         // resizeMode: 'newPoints',
         // scalePoints - looks best imo
         // newPoints - maintains triangle 'spread' but is more distracting
@@ -315,22 +366,44 @@
       this.points = [];
       this.triangles = [];
       this.pointMap.clear();
+      this.center = new Point(0, 0);
     }
 
     // clear and create a fresh set of random points
     randomize(min, max, minEdge, maxEdge, minGradients, maxGradients, colors) {
       // colors param is optional
       this.colors = colors || this.colors;
+console.time('randomize');
+      triangles = 0;
+      canvasColor = 0;
 
+      console.time('resizeCanvas');
       this.resizeCanvas();
+      console.timeEnd('resizeCanvas');
 
+      console.time('generateNewPoints');
       this.generateNewPoints(min, max, minEdge, maxEdge);
+      console.timeEnd('generateNewPoints');
 
+      console.time('triangulate');
       this.triangulate();
+      console.timeEnd('triangulate');
 
+      console.time('generateGradients');
       this.generateGradients(minGradients, maxGradients);
+      console.timeEnd('generateGradients');
 
+      console.time('render');
       this.render();
+      console.timeEnd('render');
+
+      console.table([{triangles, canvasColor}]);
+console.timeEnd('randomize');
+    }
+
+    // creates a hidden canvas for hover detection
+    createShadowCanvas() {
+      this.shadowCanvas = document.createElement('canvas');
     }
 
     generateNewPoints(min, max, minEdge, maxEdge) {
@@ -379,8 +452,10 @@
       this.generateRandomPoints(this.getNumEdgePoints(), 0, 0, this.width, 0);
     }
 
-    // randomly generate some points
+    // randomly generate some points,
+    // save the point closest to center
     generateRandomPoints(numPoints, x, y, width, height) {
+      var center = new Point(Math.round(canvas.width/2), Math.round(canvas.height/2));
       for (var i = 0; i < numPoints; i++) {
         var point;
         var j = 0;
@@ -394,7 +469,16 @@
           this.points.push(point);
           this.pointMap.add(point);
         }
+
+        if (center.getDistanceTo(point) < center.getDistanceTo(this.center)) {
+          this.center = point;
+        }
+        else {
+          this.center.isCenter = false;
+        }
       }
+
+      this.center.isCenter = true;
     }
 
     // use the Delaunay algorithm to make
@@ -553,6 +637,12 @@
       var parent = this.canvas.parentElement;
       this.canvas.width = this.width = parent.offsetWidth;
       this.canvas.height = this.height = parent.offsetHeight;
+
+      // if (this.shadowCanvas) {
+      //   parent = this.shadowCanvas.parentElement;
+      //   this.shadowCanvas.width = this.width = parent.offsetWidth;
+      //   this.shadowCanvas.height = this.height = parent.offsetHeight;
+      // }
     }
 
     // moves points/triangles based on new size of canvas
@@ -602,14 +692,14 @@
     }
 
     render() {
+      // console.time('render');
       // empty the canvas
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
       this.renderGradient();
 
-      if (this.options.showTriangles) {
-        this.renderTriangles();
-      }
+      // renders triangles, edges, and shadow canvas for hover detection
+      this.renderTriangles(this.options.showTriangles, this.options.showEdges);
 
       if (this.options.showPoints) {
         this.renderPoints();
@@ -622,14 +712,23 @@
       if (this.options.showCentroids) {
         this.renderCentroids();
       }
+      // console.timeEnd('render');
 
-      if (this.options.showEdges) {
-        this.renderEdges();
+      // throw events for light / dark text
+      var centerColor = this.center.canvasColorAtPoint();
+
+      if (parseInt(centerColor.split(',')[2]) < 50) {
+        this.options.onDarkBackground(centerColor);
+      }
+      else {
+        this.options.onLightBackground(centerColor);
       }
     }
 
     renderNewColors(colors) {
       this.colors = colors || this.colors;
+      // triangle centroids need new colors
+      this.triangulate();
       this.render();
     }
 
@@ -678,12 +777,29 @@
       }
     }
 
-    renderTriangles() {
+    renderTriangles(triangles, edges) {
+      console.time('rendering ' + this.triangles.length + ' triangles');
+      var imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
+
+      // save this for later
+      this.center.canvasColorAtPoint(imageData);
+
       for (var i = 0; i < this.triangles.length; i++) {
         // the color is determined by grabbing the color of the canvas
         // (where we drew the gradient) at the center of the triangle
-        this.triangles[i].render(this.ctx, this.triangles[i].centroid().canvasColorAtPoint());
+        if (triangles && edges) {
+          this.triangles[i].render(this.ctx, this.triangles[i].colorAtCentroid(imageData), this.options.edgeColor(this.triangles[i].colorAtCentroid(imageData)));
+        }
+        else if (triangles) {
+          // triangles only
+          this.triangles[i].render(this.ctx, this.triangles[i].colorAtCentroid(imageData));
+        }
+        else if (edges) {
+          // edges only
+          this.triangles[i].renderEdges(this.ctx, this.options.edgeColor(this.triangles[i].colorAtCentroid(imageData)));
+        }
       }
+      console.timeEnd('rendering ' + this.triangles.length + ' triangles');
     }
 
     // renders the points of the triangles
@@ -718,13 +834,6 @@
     renderCentroids() {
       for (var i = 0; i < this.triangles.length; i++) {
         this.triangles[i].centroid().render(this.ctx);
-      }
-    }
-
-    // render edges of triangles
-    renderEdges() {
-      for (var i = 0; i < this.triangles.length; i++) {
-        this.triangles[i].renderEdges(this.ctx, this.options.edgeColor(this.triangles[i].colorAtCentroid()));
       }
     }
 
@@ -782,7 +891,14 @@
   var minPoints, maxPoints, minEdgePoints, maxEdgePoints, minGradients, maxGradients, colors;
 
   // lets get this show on the road
-  let prettyDelaunay = new PrettyDelaunay(canvas);
+  let prettyDelaunay = new PrettyDelaunay(canvas, {
+    onDarkBackground: function() {
+      form.style.color = 'white';
+    },
+    onLightBackground: function() {
+      form.style.color = 'black';
+    },
+  });
 
   // initial generation
   runDelaunay();
