@@ -16,25 +16,28 @@
       <canvas id="canvas" width="500" height="300"></canvas>
     </div>
     <form class="form" id="form">
-      <div class="form-row">
-        <label for="minPoints">Min Points</label>
-        <input id="minPoints" type="number" value="100"/>
-      </div>
+      <fieldset>
+        <h4>Points to generate:</h4>
+        <div class="form-row">
+          <label for="minPoints">Min Points</label>
+          <input id="minPoints" type="number" value=""/>
+        </div>
 
-      <div class="form-row">
-        <label for="maxPoints">Max Points</label>
-        <input id="maxPoints" type="number" value="500"/>
-      </div>
+        <div class="form-row">
+          <label for="maxPoints">Max Points</label>
+          <input id="maxPoints" type="number" value=""/>
+        </div>
 
-      <div class="form-row">
-        <label for="minEdgePoints">Min Edge Points</label>
-        <input id="minEdgePoints" type="number" value="10"/>
-      </div>
+        <div class="form-row">
+          <label for="minEdgePoints">Min Edge Points</label>
+          <input id="minEdgePoints" type="number" value=""/>
+        </div>
 
-      <div class="form-row">
-        <label for="maxEdgePoints">Max Edge Points</label>
-        <input id="maxEdgePoints" type="number" value="100"/>
-      </div>
+        <div class="form-row">
+          <label for="maxEdgePoints">Max Edge Points</label>
+          <input id="maxEdgePoints" type="number" value=""/>
+        </div>
+      </fieldset>
       <br>
       <fieldset>
         <h4>Colors:</h4>
@@ -44,7 +47,7 @@
         </div>
         <div class="form-row">
           <input type="radio" name="color" value="choose" id="colorType2" />
-          <label for="colorType3">Choose</label>
+          <label for="colorType3">Choose:</label>
         </div>
         <fieldset>
           <h5>Custom colors:</h5>
@@ -65,8 +68,16 @@
         </fieldset>
       </fieldset>
       <br>
-      <button id="button" type="submit">Redo!</button>
-      <button id="toggleTriangles" type="submit">Toggle triangles</button>
+      <fieldset>
+        <h4>Generate:</h4>
+        <div class="form-row"><button id="button" type="submit">Redo!</button></div>
+        <div class="form-row"><button id="generateColors">Redo Colors</button></div>
+        <div class="form-row"><button id="toggleTriangles">Toggle Triangles</button></div>
+        <div class="form-row"><button id="togglePoints">Toggle Points</button></div>
+        <div class="form-row"><button id="toggleCircles">Toggle Circles</button></div>
+        <div class="form-row"><button id="toggleCentroids">Toggle Centroids</button></div>
+        <div class="form-row"><button id="toggleEdges">Toggle Edges</button></div>
+      </fieldset>
     </form>
     <script src="{{ "/scripts/delaunay2.js" | prepend: site.baseurl }}"></script>
     <script src="{{ "/scripts/triangles.js" | prepend: site.baseurl }}"></script>

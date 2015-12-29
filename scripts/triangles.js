@@ -60,15 +60,27 @@
     }
 
     // draw the triangle
-    render(color) {
+    render(ctx, color) {
       ctx.beginPath();
       ctx.moveTo(this.a.x, this.a.y);
       ctx.lineTo(this.b.x, this.b.y);
       ctx.lineTo(this.c.x, this.c.y);
       ctx.closePath();
-      ctx.strokeStyle = color || this.colo
+      ctx.strokeStyle = color || this.color;
       ctx.fillStyle = color || this.color;
       ctx.fill();
+      ctx.stroke();
+      ctx.closePath();
+    }
+
+    // draw the edges only
+    renderEdges(ctx, color) {
+      ctx.beginPath();
+      ctx.moveTo(this.a.x, this.a.y);
+      ctx.lineTo(this.b.x, this.b.y);
+      ctx.lineTo(this.c.x, this.c.y);
+      ctx.closePath();
+      ctx.strokeStyle = color || this.color;
       ctx.stroke();
       ctx.closePath();
     }
@@ -151,7 +163,7 @@
     }
 
     // draw the point
-    render(color) {
+    render(ctx, color) {
       ctx.beginPath();
       ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI, false);
       ctx.fillStyle = color || this.color;
@@ -255,15 +267,26 @@
       this.options = Object.assign({}, this.defaults(), (options || {}));
 
       this.canvas = canvas;
+      this.ctx = canvas.getContext('2d');
+
       this.resizeCanvas();
       this.points = [];
+      this.colors = ['white', 'white', 'white']
       this.pointMap = new PointMap();
     }
 
     defaults() {
       return {
         showTriangles: true,
-        debug: false,
+        showPoints: false,
+        showCircles: false,
+        showCentroids: false,
+        showEdges: false,
+        edgeColor: 'rgba(0, 0, 0, 0.3)',
+        resizeMode: 'scalePoints',
+        // resizeMode: 'newPoints',
+        // scalePoints - looks best imo
+        // newPoints - maintains triangle 'spread' but is more distracting
       }
     }
 
@@ -275,9 +298,34 @@
 
     // clear and create a fresh set of random points
     randomize(min, max, minEdge, maxEdge, colors) {
-      this.colors = colors;
+      // colors param is optional
+      this.colors = colors || this.colors;
+
+      console.log('arg', colors);
+      console.log('this', this.colors);
 
       this.resizeCanvas();
+
+      this.generateNewPoints(min, max, minEdge, maxEdge);
+
+      this.triangulate();
+
+      this.generateRadialGradient();
+
+      this.render();
+    }
+
+    generateNewPoints(min, max, minEdge, maxEdge) {
+      // defaults to generic number of points based on canvas dimensions
+      // this generally looks pretty nice
+      var area = this.canvas.width * this.canvas.height;
+      var perimeter = (this.canvas.width + this.canvas.height) * 2;
+
+      min = min > 0 ? Math.ceil(min) : Math.max(Math.ceil(area / 2500), 100);
+      max = max > 0 ? Math.ceil(max) : Math.max(Math.ceil(area / 1000), 100);
+
+      minEdge = minEdge > 0 ? Math.ceil(minEdge) : Math.max(Math.ceil(perimeter / 250), 10);
+      maxEdge = maxEdge > 0 ? Math.ceil(maxEdge) : Math.max(Math.ceil(perimeter / 100), 10);
 
       this.numPoints = Random.randomBetween(min, max);
       this.getNumEdgePoints = Random.randomNumberFunction(minEdge, maxEdge);
@@ -291,12 +339,6 @@
       // add some random points in the middle field,
       // excluding edges and corners
       this.generateRandomPoints(this.numPoints, 1, 1, this.width - 1, this.height - 1);
-
-      this.triangulate();
-
-      this.prettify();
-
-      this.render();
     }
 
     // add points in the corners
@@ -373,11 +415,8 @@
       });
     }
 
-    // create points, colors
-    prettify() {
-      // empty the canvas
-      ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
+    // create random radial gradient circles for rendering later
+    generateRadialGradient() {
       /**
         * create a nice-looking but somewhat random gradient:
         * randomize the first circle
@@ -418,25 +457,10 @@
       // generate the radius of circle2 based on this distance
       var r1 = Random.randomBetween(1, Math.sqrt(dist));
 
-      // create the radial gradient based on the circles' radii and origins
-      this.radgrad = ctx.createRadialGradient(x0, y0, r0, x1, y1, r1);
-
       // random but nice looking color stop
       var colorStop = Random.randomBetween(2, 8)/10;
 
-      this.radgrad.addColorStop(1, this.colors[0]);
-      this.radgrad.addColorStop(colorStop, this.colors[1]);
-      this.radgrad.addColorStop(0, this.colors[2]);
-
-      this.canvas.parentElement.style.backgroundColor = this.colors[2];
-
-      // draws the circles that define the gradients
-      // ctx.arc(x0, y0, r0, 0, Math.PI*2, true);
-      // ctx.strokeStyle = 'white';
-      // ctx.stroke();
-      // ctx.arc(x1, y1, r1, 0, Math.PI*2, true);
-      // ctx.strokeStyle = 'black';
-      // ctx.stroke();
+      this.radialGradientOptions = { x0, y0, r0, x1, y1, r1, colorStop };
     }
 
     // sorts the points
@@ -470,13 +494,11 @@
       this.canvas.height = this.height = parent.offsetHeight;
     }
 
-    // moves points/traingles based on new size of canvas
+    // moves points/triangles based on new size of canvas
     rescale() {
-      console.log('Rescaling...');
-
       this.resizeCanvas();
 
-      // calc old max/min
+      // calc old max/min from existing points
       var xMin = Number.MAX_VALUE;
       var xMax = 0;
       var yMin = Number.MAX_VALUE;
@@ -489,27 +511,130 @@
         yMax = Math.max(this.triangles[i].yMax(),yMax);
       }
 
-      console.table([{ xMin, xMax, yMin, yMax }]);
-
-      console.table([{
-        newXMin: 0,
-        newXMax: this.canvas.width,
-        newYMin: 0,
-        newYMax: this.canvas.height,
-      }])
-
-      // remap all points and triangles to new width / height
-      for (var i = 0; i < this.points.length; i++) {
-        this.points[i].rescale(xMin, xMax, yMin, yMax, 0, this.canvas.width, 0, this.canvas.height);
+      if (this.options.resizeMode === 'scalePoints') {
+        // scale all points to new max dimensions
+        for (var i = 0; i < this.points.length; i++) {
+          this.points[i].rescale(xMin, xMax, yMin, yMax, 0, this.canvas.width, 0, this.canvas.height);
+        }
+      }
+      else {
+        this.generateNewPoints();
       }
 
-      for (var i = 0; i < this.triangles.length; i++) {
-        this.triangles[i].rescalePoints(xMin, xMax, yMin, yMax, 0, this.canvas.width, 0, this.canvas.height);
-      }
+      this.triangulate();
+
+      // rescale position of radial gradient circles
+      var circle0 = new Point(this.radialGradientOptions.x0, this.radialGradientOptions.y0);
+      var circle1 = new Point(this.radialGradientOptions.x1, this.radialGradientOptions.y1);
+
+      circle0.rescale(xMin, xMax, yMin, yMax, 0, this.canvas.width, 0, this.canvas.height);
+      circle1.rescale(xMin, xMax, yMin, yMax, 0, this.canvas.width, 0, this.canvas.height);
+
+      this.radialGradientOptions.x0 = circle0.x;
+      this.radialGradientOptions.y0 = circle0.y;
+      this.radialGradientOptions.x1 = circle1.x;
+      this.radialGradientOptions.y1 = circle1.y;
 
       this.render();
+    }
 
-      console.log('Finished rescaling!');
+    render() {
+      // empty the canvas
+      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+      this.renderGradient();
+
+      if (this.options.showTriangles) {
+        this.renderTriangles();
+      }
+
+      if (this.options.showPoints) {
+        this.renderPoints();
+      }
+
+      if (this.options.showCircles) {
+        this.renderGradientCircles();
+      }
+
+      if (this.options.showCentroids) {
+        this.renderCentroids();
+      }
+
+      if (this.options.showEdges) {
+        this.renderEdges();
+      }
+    }
+
+    renderNewColors(colors) {
+      this.colors = colors;
+      this.render();
+    }
+
+    renderGradient() {
+      // create the radial gradient based on
+      // the generated circles' radii and origins
+      this.radialGradient = this.ctx.createRadialGradient(
+        this.radialGradientOptions.x0,
+        this.radialGradientOptions.y0,
+        this.radialGradientOptions.r0,
+        this.radialGradientOptions.x1,
+        this.radialGradientOptions.y1,
+        this.radialGradientOptions.r1
+      );
+
+      this.radialGradient.addColorStop(1, this.colors[0]);
+      this.radialGradient.addColorStop(this.radialGradientOptions.colorStop, this.colors[1]);
+      this.radialGradient.addColorStop(0, this.colors[2]);
+
+      this.canvas.parentElement.style.backgroundColor = this.colors[2];
+
+      this.ctx.fillStyle = this.radialGradient;
+      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    }
+
+    renderTriangles() {
+      for (var i = 0; i < this.triangles.length; i++) {
+        // the color is determined by grabbing the color of the canvas
+        // (where we drew the gradient) at the center of the triangle
+        this.triangles[i].render(this.ctx, this.triangles[i].centroid().canvasColorAtPoint());
+      }
+    }
+
+    renderPoints() {
+      for (var i = 0; i < this.points.length; i++) {
+        this.points[i].render(this.ctx);
+      }
+    }
+
+    renderGradientCircles() {
+      // draws the circles that define the gradients
+      this.ctx.strokeStyle = 'black';
+
+      this.ctx.beginPath();
+      this.ctx.arc(this.radialGradientOptions.x0,
+              this.radialGradientOptions.y0,
+              this.radialGradientOptions.r0,
+              0, Math.PI*2, true);
+      this.ctx.stroke();
+
+      this.ctx.beginPath();
+      this.ctx.arc(this.radialGradientOptions.x1,
+              this.radialGradientOptions.y1,
+              this.radialGradientOptions.r1,
+              0, Math.PI*2, true);
+      this.ctx.stroke();
+    }
+
+    renderCentroids() {
+      for (var i = 0; i < this.triangles.length; i++) {
+        this.triangles[i].centroid().render(this.ctx);
+      }
+    }
+
+    renderEdges() {
+      for (var i = 0; i < this.triangles.length; i++) {
+        this.triangles[i].renderEdges(this.ctx, this.options.edgeColor);
+      }
     }
 
     toggleTriangles() {
@@ -517,33 +642,24 @@
       this.render();
     }
 
-    render() {
-      this.renderGradient();
-
-      if (this.options.showTriangles) {
-        this.renderTriangles();
-      }
-
-      // this.renderPoints();
+    togglePoints() {
+      this.options.showPoints = !this.options.showPoints;
+      this.render();
     }
 
-    renderGradient() {
-      ctx.fillStyle = this.radgrad;
-      ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    toggleCircles() {
+      this.options.showCircles = !this.options.showCircles;
+      this.render();
     }
 
-    renderTriangles() {
-      for (var i = 0; i < this.triangles.length; i++) {
-        // the color is determined by grabbing the color of the canvas
-        // (where we drew the gradient) at the center of the triangle
-        this.triangles[i].render(this.triangles[i].centroid().canvasColorAtPoint());
-      }
+    toggleCentroids() {
+      this.options.showCentroids = !this.options.showCentroids;
+      this.render();
     }
 
-    renderPoints() {
-      for (var i = 0; i < this.points.length; i++) {
-        this.points[i].render();
-      }
+    toggleEdges() {
+      this.options.showEdges = !this.options.showEdges;
+      this.render();
     }
 
   }
@@ -553,7 +669,14 @@
   const ctx = canvas.getContext('2d');
 
   const button = document.getElementById('button');
+
+  const generateColorsButton = document.getElementById('generateColors');
+
   const toggleTrianglesButton = document.getElementById('toggleTriangles');
+  const togglePointsButton = document.getElementById('togglePoints');
+  const toggleCirclesButton = document.getElementById('toggleCircles');
+  const toggleCentroidsButton = document.getElementById('toggleCentroids');
+  const toggleEdgesButton = document.getElementById('toggleEdges');
 
   const form = document.getElementById('form');
   const maxInput = document.getElementById('maxPoints');
@@ -579,28 +702,35 @@
     prettyDelaunay.randomize(minPoints, maxPoints, minEdgePoints, maxEdgePoints, colors);
   }
 
+  function getColors() {
+    var newColors = [];
+
+    if (document.getElementById('colorType1').checked) {
+      // generate random colors
+      for (var i = 0; i < 3; i++) {
+        var color = Random.randomColor();
+        newColors.push(color);
+      }
+    }
+    else {
+      // use the ones in the inputs
+      newColors.push(document.getElementById('color1').value);
+      newColors.push(document.getElementById('color2').value);
+      newColors.push(document.getElementById('color3').value);
+    }
+
+    console.log(newColors);
+
+    return newColors;
+  }
+
   // get options from input fields
   function getOptions() {
     minPoints = parseInt(minInput.value);
     maxPoints = parseInt(maxInput.value);
     minEdgePoints = parseInt(minEdgeInput.value);
     maxEdgePoints = parseInt(maxEdgeInput.value);
-
-    colors = [];
-
-    if (document.getElementById('colorType1').checked) {
-      // generate random colors
-      for (var i = 0; i < 3; i++) {
-        var color = Random.randomColor();
-        colors.push(color);
-      }
-    }
-    else {
-      // use the ones in the inputs
-      colors.push(document.getElementById('color1').value);
-      colors.push(document.getElementById('color2').value);
-      colors.push(document.getElementById('color3').value);
-    }
+    colors = getColors();
   }
 
  function throttle(type, name, obj) {
@@ -629,9 +759,35 @@
     runDelaunay();
   });
 
-  // click the button to regen
+  // click the button to regen colors only
+  generateColorsButton.addEventListener('click', function() {
+    var newColors = getColors();
+    prettyDelaunay.renderNewColors(newColors);
+  });
+
+  // turn Triangles off/on
   toggleTrianglesButton.addEventListener('click', function() {
     prettyDelaunay.toggleTriangles();
+  });
+
+  // turn Points off/on
+  togglePointsButton.addEventListener('click', function() {
+    prettyDelaunay.togglePoints();
+  });
+
+  // turn Circles off/on
+  toggleCirclesButton.addEventListener('click', function() {
+    prettyDelaunay.toggleCircles();
+  });
+
+  // turn Centroids off/on
+  toggleCentroidsButton.addEventListener('click', function() {
+    prettyDelaunay.toggleCentroids();
+  });
+
+  // turn Edges off/on
+  toggleEdgesButton.addEventListener('click', function() {
+    prettyDelaunay.toggleEdges();
   });
 
   // regen on resize
@@ -647,15 +803,16 @@
 
 })();
 
-// TODO
-// Debug mode for drawing gradient circles,
-// triangle centers, etc
-// Option to isolate regen
+// TODO:
+// Isolate regen:
 //   - gradient only
 //   - color only
 //   - points/triangles only
-
-// figure out what to do on resize
-//  - regen triangles, but not gradient?
-//  - or just fix linear scaling
 //
+// custom number of colors?
+// additional radgrads to make blobs or more interesting color transitions
+// rotate/scale radgrad to get ellipse
+//
+// hover effects
+// - if a point is inside a triangle
+// ripple?
