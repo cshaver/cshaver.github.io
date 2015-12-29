@@ -34,8 +34,12 @@
       return new Point(x, y);
     }
 
-    static randomColor() {
+    static randomRgba() {
       return 'rgba(' + Random.randomBetween(255) + ',' + Random.randomBetween(255) + ',' + Random.randomBetween(255) + ', 1)';
+    }
+
+    static randomHsla() {
+      return 'hsla(' + Random.randomBetween(360) + ',' + Random.randomBetween(100) + '%,' + Random.randomBetween(100) + '%, 1)';
     }
   }
 
@@ -91,6 +95,10 @@
       var x = (1 - Math.sqrt(r1)) * this.p1.x + (Math.sqrt(r1) * (1 - r2)) * this.p2.x + (Math.sqrt(r1) * r2) * this.p3.x;
       var y = (1 - Math.sqrt(r1)) * this.p1.y + (Math.sqrt(r1) * (1 - r2)) * this.p2.y + (Math.sqrt(r1) * r2) * this.p3.y;
       return new Point(x, y);
+    }
+
+    colorAtCentroid() {
+      return this.centroid().canvasColorAtPoint();
     }
 
     centroid() {
@@ -174,7 +182,8 @@
     // grab the color of the canvas at the point
     canvasColorAtPoint() {
       var data = ctx.getImageData(this.x, this.y, 1, 1).data;
-      return 'rgba(' + Array.prototype.slice.call(data, 0, 4).join(',') + ')';
+
+      return rgbToHsla(Array.prototype.slice.call(data, 0, 4));
     }
 
     /**
@@ -281,8 +290,20 @@
         showPoints: false,
         showCircles: false,
         showCentroids: false,
-        showEdges: false,
-        edgeColor: 'rgba(0, 0, 0, 0.3)',
+        showEdges: true,
+        edgeColor: function(color) {
+          color = color.split(',');
+          var lightness = parseInt(color[2]);
+          if (lightness > 50) {
+            lightness *= 0.75;
+          }
+          else {
+            lightness *= 1.25;
+          }
+          color[2] = lightness + '%';
+          color[3] = 0.3;
+          return color.join(',');
+        },
         resizeMode: 'scalePoints',
         // resizeMode: 'newPoints',
         // scalePoints - looks best imo
@@ -297,7 +318,7 @@
     }
 
     // clear and create a fresh set of random points
-    randomize(min, max, minEdge, maxEdge, colors) {
+    randomize(min, max, minEdge, maxEdge, minGradients, maxGradients, colors) {
       // colors param is optional
       this.colors = colors || this.colors;
 
@@ -307,7 +328,7 @@
 
       this.triangulate();
 
-      this.generateRadialGradient();
+      this.generateGradients(minGradients, maxGradients);
 
       this.render();
     }
@@ -413,6 +434,19 @@
     }
 
     // create random radial gradient circles for rendering later
+    generateGradients(minGradients, maxGradients) {
+      this.radialGradients = [];
+
+      minGradients = minGradients > 0 ? minGradients : 1;
+      maxGradients = maxGradients > 0 ? maxGradients : 2;
+
+      this.numGradients = Random.randomBetween(minGradients, maxGradients);
+
+      for (var i = 0; i < this.numGradients; i++) {
+        this.generateRadialGradient();
+      }
+    }
+
     generateRadialGradient() {
       /**
         * create a nice-looking but somewhat random gradient:
@@ -423,19 +457,49 @@
         * circle2's radius can be between 0 and this dist
         */
 
+      var minX = Math.ceil(Math.sqrt(canvas.width));
+      var maxX = Math.ceil(canvas.width - Math.sqrt(canvas.width));
+
+      var minY = Math.ceil(Math.sqrt(canvas.height));
+      var maxY = Math.ceil(canvas.height - Math.sqrt(canvas.height));
+
+      var minRadius = Math.ceil(Math.max(canvas.height, canvas.width)/ Math.max(Math.sqrt(this.numGradients), 2));
+      var maxRadius = Math.ceil(Math.max(canvas.height, canvas.width) / Math.max(Math.log(this.numGradients), 1));
+
       // helper random functions
-      var randomCanvasX = Random.randomNumberFunction(Math.sqrt(canvas.width), canvas.width - Math.sqrt(canvas.width));
-      var randomCanvasY = Random.randomNumberFunction(Math.sqrt(canvas.height), canvas.height - Math.sqrt(canvas.height));
-      var randomCanvasRadius = Random.randomNumberFunction(Math.max(canvas.height, canvas.width)/2, Math.max(canvas.height, canvas.width));
+      var randomCanvasX = Random.randomNumberFunction(minX, maxX);
+      var randomCanvasY = Random.randomNumberFunction(minY, maxY);
+      var randomCanvasRadius = Random.randomNumberFunction(minRadius, maxRadius);
 
       // generate circle1 origin and radius
-      var x0 = randomCanvasX();
-      var y0 = randomCanvasY();
+      var x0, y0;
       var r0 = randomCanvasRadius();
+
+      // origin of the next circle should be contained
+      // within the area of its predecessor
+      if (this.radialGradients.length > 0) {
+        var lastGradient = this.radialGradients[this.radialGradients.length - 1]
+        var pointInLastCircle = Random.randomInCircle(lastGradient.r0, lastGradient.x0, lastGradient.y0);
+
+        // origin must be within the bounds of the canvas
+        while (pointInLastCircle.x < 0 ||
+               pointInLastCircle.y < 0 ||
+               pointInLastCircle.x > this.canvas.width ||
+               pointInLastCircle.y > this.canvas.height) {
+          pointInLastCircle = Random.randomInCircle(lastGradient.r0, lastGradient.x0, lastGradient.y0);
+        }
+        x0 = pointInLastCircle.x;
+        y0 = pointInLastCircle.y;
+      }
+      else {
+        // first circle, just pick at random
+        x0 = randomCanvasX();
+        y0 = randomCanvasY();
+      }
 
       // find a random point inside circle1
       // this is the origin of circle 2
-      var pointInCircle = Random.randomInCircle(r0*.09, x0, y0);
+      var pointInCircle = Random.randomInCircle(r0*0.09, x0, y0);
 
       // grab the x/y coords
       var x1 = pointInCircle.x;
@@ -457,7 +521,7 @@
       // random but nice looking color stop
       var colorStop = Random.randomBetween(2, 8)/10;
 
-      this.radialGradientOptions = { x0, y0, r0, x1, y1, r1, colorStop };
+      this.radialGradients.push({ x0, y0, r0, x1, y1, r1, colorStop });
     }
 
     // sorts the points
@@ -521,16 +585,18 @@
       this.triangulate();
 
       // rescale position of radial gradient circles
-      var circle0 = new Point(this.radialGradientOptions.x0, this.radialGradientOptions.y0);
-      var circle1 = new Point(this.radialGradientOptions.x1, this.radialGradientOptions.y1);
+      for (var i = 0; i < this.radialGradients.length; i++) {
+        var circle0 = new Point(this.radialGradients[i].x0, this.radialGradients[i].y0);
+        var circle1 = new Point(this.radialGradients[i].x1, this.radialGradients[i].y1);
 
-      circle0.rescale(xMin, xMax, yMin, yMax, 0, this.canvas.width, 0, this.canvas.height);
-      circle1.rescale(xMin, xMax, yMin, yMax, 0, this.canvas.width, 0, this.canvas.height);
+        circle0.rescale(xMin, xMax, yMin, yMax, 0, this.canvas.width, 0, this.canvas.height);
+        circle1.rescale(xMin, xMax, yMin, yMax, 0, this.canvas.width, 0, this.canvas.height);
 
-      this.radialGradientOptions.x0 = circle0.x;
-      this.radialGradientOptions.y0 = circle0.y;
-      this.radialGradientOptions.x1 = circle1.x;
-      this.radialGradientOptions.y1 = circle1.y;
+        this.radialGradients[i].x0 = circle0.x;
+        this.radialGradients[i].y0 = circle0.y;
+        this.radialGradients[i].x1 = circle1.x;
+        this.radialGradients[i].y1 = circle1.y;
+      }
 
       this.render();
     }
@@ -563,41 +629,53 @@
     }
 
     renderNewColors(colors) {
-      this.colors = colors;
+      this.colors = colors || this.colors;
       this.render();
     }
 
-    renderNewGradient() {
-      this.generateRadialGradient();
+    renderNewGradient(minGradients, maxGradients) {
+      this.generateGradients(minGradients, maxGradients);
       this.render();
     }
 
-    renderNewTriangles() {
-      this.generateNewPoints();
+    renderNewTriangles(min, max, minEdge, maxEdge) {
+      this.generateNewPoints(min, max, minEdge, maxEdge);
       this.triangulate();
       this.render();
     }
 
     renderGradient() {
-      // create the radial gradient based on
-      // the generated circles' radii and origins
-      this.radialGradient = this.ctx.createRadialGradient(
-        this.radialGradientOptions.x0,
-        this.radialGradientOptions.y0,
-        this.radialGradientOptions.r0,
-        this.radialGradientOptions.x1,
-        this.radialGradientOptions.y1,
-        this.radialGradientOptions.r1
-      );
+      for (var i = 0; i < this.radialGradients.length; i++) {
+        // create the radial gradient based on
+        // the generated circles' radii and origins
+        var radialGradient = this.ctx.createRadialGradient(
+          this.radialGradients[i].x0,
+          this.radialGradients[i].y0,
+          this.radialGradients[i].r0,
+          this.radialGradients[i].x1,
+          this.radialGradients[i].y1,
+          this.radialGradients[i].r1
+        );
 
-      this.radialGradient.addColorStop(1, this.colors[0]);
-      this.radialGradient.addColorStop(this.radialGradientOptions.colorStop, this.colors[1]);
-      this.radialGradient.addColorStop(0, this.colors[2]);
+        var outerColor = this.colors[2];
 
-      this.canvas.parentElement.style.backgroundColor = this.colors[2];
+        // must be transparent version of middle color
+        // this works for rgba and hsla
+        if (i > 0) {
+          outerColor = this.colors[1].split(',');
+          outerColor[3] = '0)';
+          outerColor = outerColor.join(',');
+        }
 
-      this.ctx.fillStyle = this.radialGradient;
-      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        radialGradient.addColorStop(1, this.colors[0]);
+        radialGradient.addColorStop(this.radialGradients[i].colorStop, this.colors[1]);
+        radialGradient.addColorStop(0, outerColor);
+
+        this.canvas.parentElement.style.backgroundColor = this.colors[2];
+
+        this.ctx.fillStyle = radialGradient;
+        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+      }
     }
 
     renderTriangles() {
@@ -608,40 +686,45 @@
       }
     }
 
+    // renders the points of the triangles
     renderPoints() {
       for (var i = 0; i < this.points.length; i++) {
         this.points[i].render(this.ctx);
       }
     }
 
+    // draws the circles that define the gradients
     renderGradientCircles() {
-      // draws the circles that define the gradients
       this.ctx.strokeStyle = 'black';
 
-      this.ctx.beginPath();
-      this.ctx.arc(this.radialGradientOptions.x0,
-              this.radialGradientOptions.y0,
-              this.radialGradientOptions.r0,
-              0, Math.PI*2, true);
-      this.ctx.stroke();
+      for (var i = 0; i < this.radialGradients.length; i++) {
+        this.ctx.beginPath();
+        this.ctx.arc(this.radialGradients[i].x0,
+                this.radialGradients[i].y0,
+                this.radialGradients[i].r0,
+                0, Math.PI*2, true);
+        this.ctx.stroke();
 
-      this.ctx.beginPath();
-      this.ctx.arc(this.radialGradientOptions.x1,
-              this.radialGradientOptions.y1,
-              this.radialGradientOptions.r1,
-              0, Math.PI*2, true);
-      this.ctx.stroke();
+        this.ctx.beginPath();
+        this.ctx.arc(this.radialGradients[i].x1,
+                this.radialGradients[i].y1,
+                this.radialGradients[i].r1,
+                0, Math.PI*2, true);
+        this.ctx.stroke();
+      }
     }
 
+    // render triangle centroids
     renderCentroids() {
       for (var i = 0; i < this.triangles.length; i++) {
         this.triangles[i].centroid().render(this.ctx);
       }
     }
 
+    // render edges of triangles
     renderEdges() {
       for (var i = 0; i < this.triangles.length; i++) {
-        this.triangles[i].renderEdges(this.ctx, this.options.edgeColor);
+        this.triangles[i].renderEdges(this.ctx, this.options.edgeColor(this.triangles[i].colorAtCentroid()));
       }
     }
 
@@ -693,8 +776,10 @@
   const minInput = document.getElementById('minPoints');
   const maxEdgeInput = document.getElementById('maxEdgePoints');
   const minEdgeInput = document.getElementById('minEdgePoints');
+  const maxGradientInput = document.getElementById('maxGradients');
+  const minGradientInput = document.getElementById('minGradients');
 
-  var minPoints, maxPoints, minEdgePoints, maxEdgePoints, colors;
+  var minPoints, maxPoints, minEdgePoints, maxEdgePoints, minGradients, maxGradients, colors;
 
   // lets get this show on the road
   let prettyDelaunay = new PrettyDelaunay(canvas);
@@ -709,27 +794,27 @@
   // get options and re-randomize
   function runDelaunay() {
     getOptions();
-    prettyDelaunay.randomize(minPoints, maxPoints, minEdgePoints, maxEdgePoints, colors);
+    prettyDelaunay.randomize(minPoints, maxPoints, minEdgePoints, maxEdgePoints, minGradients, maxGradients, colors);
   }
 
   function getColors() {
-    var newColors = [];
+    var colors = [];
 
     if (document.getElementById('colorType1').checked) {
       // generate random colors
       for (var i = 0; i < 3; i++) {
-        var color = Random.randomColor();
-        newColors.push(color);
+        var color = Random.randomHsla();
+        colors.push(color);
       }
     }
     else {
       // use the ones in the inputs
-      newColors.push(document.getElementById('color1').value);
-      newColors.push(document.getElementById('color2').value);
-      newColors.push(document.getElementById('color3').value);
+      colors.push(rgbToHsla(hexToRgbaArray(document.getElementById('color1').value)));
+      colors.push(rgbToHsla(hexToRgbaArray(document.getElementById('color2').value)));
+      colors.push(rgbToHsla(hexToRgbaArray(document.getElementById('color3').value)));
     }
 
-    return newColors;
+    return colors;
   }
 
   // get options from input fields
@@ -738,6 +823,8 @@
     maxPoints = parseInt(maxInput.value);
     minEdgePoints = parseInt(minEdgeInput.value);
     maxEdgePoints = parseInt(maxEdgeInput.value);
+    minGradients = parseInt(minGradientInput.value);
+    maxGradients = parseInt(maxGradientInput.value);
     colors = getColors();
   }
 
@@ -775,12 +862,14 @@
 
   // click the button to regen colors only
   generateGradientButton.addEventListener('click', function() {
-    prettyDelaunay.renderNewGradient();
+    getOptions();
+    prettyDelaunay.renderNewGradient(minGradients, maxGradients);
   });
 
   // click the button to regen colors only
   generateTrianglesButton.addEventListener('click', function() {
-    prettyDelaunay.renderNewTriangles();
+    getOptions();
+    prettyDelaunay.renderNewTriangles(minPoints, maxPoints, minEdgePoints, maxEdgePoints);
   });
 
   // turn Triangles off/on
@@ -818,6 +907,57 @@
     e.preventDefault();
     return false;
   });
+
+  function hexToRgba(hex) {
+    hex = hex.replace('#','');
+    var r = parseInt(hex.substring(0,2), 16);
+    var g = parseInt(hex.substring(2,4), 16);
+    var b = parseInt(hex.substring(4,6), 16);
+
+    return 'rgba(' + r + ',' + g + ',' + b + ',1)';
+  }
+
+  function hexToRgbaArray(hex) {
+    hex = hex.replace('#','');
+    var r = parseInt(hex.substring(0,2), 16);
+    var g = parseInt(hex.substring(2,4), 16);
+    var b = parseInt(hex.substring(4,6), 16);
+
+    return [r, g, b];
+  }
+
+  /**
+ * Converts an RGB color value to HSL. Conversion formula
+ * adapted from http://en.wikipedia.org/wiki/HSL_color_space.
+ * Assumes r, g, and b are contained in the set [0, 255] and
+ * returns h, s, and l in the set [0, 1].
+ *
+ * @param   Number  r       The red color value
+ * @param   Number  g       The green color value
+ * @param   Number  b       The blue color value
+ * @return  Array           The HSL representation
+ */
+  function rgbToHsla(rgb){
+    var r = rgb[0]/255, g = rgb[1]/255, b = rgb[2]/255;
+    var max = Math.max(r, g, b), min = Math.min(r, g, b);
+    var h, s, l = (max + min) / 2;
+
+    if (max === min){
+        h = s = 0; // achromatic
+    }
+    else{
+        var d = max - min;
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+        switch(max){
+            case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+            case g: h = (b - r) / d + 2; break;
+            case b: h = (r - g) / d + 4; break;
+        }
+        h /= 6;
+    }
+
+    return 'hsla(' + Math.round(h*360) + ',' + Math.round(s*100) + '%,' + Math.round(l*100) + '%,1)';
+  }
 
 })();
 
