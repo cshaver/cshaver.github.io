@@ -20,22 +20,22 @@
         <h4>Points to generate:</h4>
         <div class="form-row">
           <label for="minPoints">Min Points</label>
-          <input id="minPoints" type="number" value=""/>
+          <input id="minPoints" type="number" min="1" max="10000" value=""/>
         </div>
 
         <div class="form-row">
           <label for="maxPoints">Max Points</label>
-          <input id="maxPoints" type="number" value=""/>
+          <input id="maxPoints" type="number" min="1" max="10000" value=""/>
         </div>
 
         <div class="form-row">
           <label for="minEdgePoints">Min Edge Points</label>
-          <input id="minEdgePoints" type="number" value=""/>
+          <input id="minEdgePoints" type="number" min="1" max="10000" value=""/>
         </div>
 
         <div class="form-row">
           <label for="maxEdgePoints">Max Edge Points</label>
-          <input id="maxEdgePoints" type="number" value=""/>
+          <input id="maxEdgePoints" type="number" min="1" max="10000" value=""/>
         </div>
       </fieldset>
       <br>
@@ -70,13 +70,23 @@
       <br>
       <fieldset>
         <h4>Generate:</h4>
-        <div class="form-row"><button id="button" type="submit">Redo!</button></div>
-        <div class="form-row"><button id="generateColors">Redo Colors</button></div>
-        <div class="form-row"><button id="toggleTriangles">Toggle Triangles</button></div>
-        <div class="form-row"><button id="togglePoints">Toggle Points</button></div>
-        <div class="form-row"><button id="toggleCircles">Toggle Circles</button></div>
-        <div class="form-row"><button id="toggleCentroids">Toggle Centroids</button></div>
-        <div class="form-row"><button id="toggleEdges">Toggle Edges</button></div>
+        <div class="form-row">
+          <button id="button" type="submit">Redo!</button>
+        </div>
+        <div class="form-row">
+          <button id="generateColors">Redo Colors</button>
+          <button id="generateGradient">Redo Gradient</button>
+          <button id="generateTriangles">Redo Triangles</button>
+        </div>
+        <div class="form-row">
+          <button id="toggleTriangles">Toggle Triangles</button>
+          <button id="toggleEdges">Toggle Edges</button>
+        </div>
+        <div class="form-row">
+          <button id="togglePoints">Toggle Points</button>
+          <button id="toggleCircles">Toggle Circles</button>
+          <button id="toggleCentroids">Toggle Centroids</button>
+        </div>
       </fieldset>
     </form>
     <script src="{{ "/scripts/delaunay2.js" | prepend: site.baseurl }}"></script>

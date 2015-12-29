@@ -301,9 +301,6 @@
       // colors param is optional
       this.colors = colors || this.colors;
 
-      console.log('arg', colors);
-      console.log('this', this.colors);
-
       this.resizeCanvas();
 
       this.generateNewPoints(min, max, minEdge, maxEdge);
@@ -570,6 +567,17 @@
       this.render();
     }
 
+    renderNewGradient() {
+      this.generateRadialGradient();
+      this.render();
+    }
+
+    renderNewTriangles() {
+      this.generateNewPoints();
+      this.triangulate();
+      this.render();
+    }
+
     renderGradient() {
       // create the radial gradient based on
       // the generated circles' radii and origins
@@ -671,6 +679,8 @@
   const button = document.getElementById('button');
 
   const generateColorsButton = document.getElementById('generateColors');
+  const generateGradientButton = document.getElementById('generateGradient');
+  const generateTrianglesButton = document.getElementById('generateTriangles');
 
   const toggleTrianglesButton = document.getElementById('toggleTriangles');
   const togglePointsButton = document.getElementById('togglePoints');
@@ -719,8 +729,6 @@
       newColors.push(document.getElementById('color3').value);
     }
 
-    console.log(newColors);
-
     return newColors;
   }
 
@@ -765,6 +773,16 @@
     prettyDelaunay.renderNewColors(newColors);
   });
 
+  // click the button to regen colors only
+  generateGradientButton.addEventListener('click', function() {
+    prettyDelaunay.renderNewGradient();
+  });
+
+  // click the button to regen colors only
+  generateTrianglesButton.addEventListener('click', function() {
+    prettyDelaunay.renderNewTriangles();
+  });
+
   // turn Triangles off/on
   toggleTrianglesButton.addEventListener('click', function() {
     prettyDelaunay.toggleTriangles();
@@ -790,7 +808,7 @@
     prettyDelaunay.toggleEdges();
   });
 
-  // regen on resize
+  // resize event
   window.addEventListener('optimizedResize', function() {
     prettyDelaunay.rescale();
   });
@@ -804,11 +822,6 @@
 })();
 
 // TODO:
-// Isolate regen:
-//   - gradient only
-//   - color only
-//   - points/triangles only
-//
 // custom number of colors?
 // additional radgrads to make blobs or more interesting color transitions
 // rotate/scale radgrad to get ellipse
