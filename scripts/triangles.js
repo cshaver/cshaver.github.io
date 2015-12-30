@@ -136,22 +136,6 @@
     getPoints() {
       return [this.p1, this.p2, this.p3];
     }
-
-    xMin() {
-      return Math.min(this.p1.x, this.p2.x, this.p3.x);
-    }
-
-    yMin() {
-      return Math.min(this.p1.y, this.p2.y, this.p3.y);
-    }
-
-    xMax() {
-      return Math.max(this.p1.x, this.p2.x, this.p3.x);
-    }
-
-    yMax() {
-      return Math.max(this.p1.y, this.p2.y, this.p3.y);
-    }
   }
 
   /**
@@ -339,6 +323,17 @@
         showCircles: false,
         showCentroids: false,
         showEdges: true,
+        hover: true,
+
+        resizeMode: 'scalePoints',
+        // 'newPoints' - generates a new set of points for the new size
+        // 'scalePoints' - linearly scales existing points and re-triangulates
+
+        onDarkBackground: function(color) { return; },
+        onLightBackground: function(color) { return; },
+
+        // returns hsla color for triangle edge
+        // as a function of the triangle fill color
         edgeColor: function(color) {
           color = color.split(',');
           var lightness = parseInt(color[2]);
@@ -347,6 +342,9 @@
           color[3] = 0.25;
           return color.join(',');
         },
+
+        // returns hsla color for triangle hover fill
+        // as a function of the triangle fill color
         hoverColor: function(color) {
           color = color.split(',');
           var lightness = parseInt(color[2]);
@@ -356,13 +354,6 @@
           color[3] = 0.5;
           return color.join(',');
         },
-        onDarkBackground: function(color) { return; },
-        onLightBackground: function(color) { return; },
-        resizeMode: 'scalePoints',
-        hover: true,
-        // resizeMode: 'newPoints',
-        // scalePoints - looks best imo
-        // newPoints - maintains triangle 'spread' but is more distracting
       }
     }
 
@@ -638,20 +629,13 @@
 
     // moves points/triangles based on new size of canvas
     rescale() {
+      // grab old max/min from current canvas size
+      var xMin = 0;
+      var xMax = this.canvas.width;
+      var yMin = 0;
+      var yMax = this.canvas.height;
+
       this.resizeCanvas();
-
-      // calc old max/min from existing points
-      var xMin = Number.MAX_VALUE;
-      var xMax = 0;
-      var yMin = Number.MAX_VALUE;
-      var yMax = 0;
-
-      for (var i = 0; i < this.triangles.length; i++) {
-        xMin = Math.min(this.triangles[i].xMin(), xMin);
-        xMax = Math.max(this.triangles[i].xMax(),xMax);
-        yMin = Math.min(this.triangles[i].yMin(), yMin);
-        yMax = Math.max(this.triangles[i].yMax(),yMax);
-      }
 
       if (this.options.resizeMode === 'scalePoints') {
         // scale all points to new max dimensions
