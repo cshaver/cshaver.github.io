@@ -2,15 +2,10 @@
   // see http://paulbourke.net/papers/triangulate/
   'use strict';
 
-  var triangles = 0;
-  var edges = 0;
-
-  var canvasColor = 0;
-
+  // random helper functions
   class Random {
     // hey look a closure
-    // helper function, returns function for
-    // random with pre-set max and min
+    // returns function for random numbers with pre-set max and min
     static randomNumberFunction(max, min) {
       min = min || 0;
       if (min > max) {
@@ -66,34 +61,28 @@
       this.p3 = this.c = c;
 
       this.color = 'black';
+      this.stroke = 'black';
     }
 
-    // draw the triangle
-    render(ctx, color, edgeColor) {
+    // draw the triangle with differing edge colors optional
+    render(ctx, color, stroke) {
       ctx.beginPath();
       ctx.moveTo(this.a.x, this.a.y);
       ctx.lineTo(this.b.x, this.b.y);
       ctx.lineTo(this.c.x, this.c.y);
       ctx.closePath();
-      ctx.strokeStyle = edgeColor || color || this.color;
+      ctx.strokeStyle = stroke || this.stroke || this.color;
       ctx.fillStyle = color || this.color;
-      ctx.fill();
-      ctx.stroke();
+      if (color !== false) {
+        ctx.fill();
+      }
+      if (stroke !== false) {
+        ctx.stroke();
+      }
       ctx.closePath();
     }
 
-    // draw the edges only
-    renderEdges(ctx, color) {
-      ctx.beginPath();
-      ctx.moveTo(this.a.x, this.a.y);
-      ctx.lineTo(this.b.x, this.b.y);
-      ctx.lineTo(this.c.x, this.c.y);
-      ctx.closePath();
-      ctx.strokeStyle = color || this.color;
-      ctx.stroke();
-      ctx.closePath();
-    }
-
+    // random point inside triangle
     randomInside() {
       var r1 = Math.random();
       var r2 = Math.random();
@@ -103,14 +92,11 @@
     }
 
     colorAtCentroid(imageData) {
-      var a = performance.now();
-      var color = this.centroid().canvasColorAtPoint(imageData);
-      var b = performance.now();
-      triangles += (b-a);
-      return color;
+      return this.centroid().canvasColorAtPoint(imageData);
     }
 
     centroid() {
+      // only calc the centroid if we dont already know it
       if (this._centroid) {
         return this._centroid;
       }
@@ -123,6 +109,17 @@
       }
     }
 
+    // http://stackoverflow.com/questions/13300904/determine-whether-point-lies-inside-triangle
+    pointInTriangle(point) {
+      var alpha = ((this.p2.y - this.p3.y)*(point.x - this.p3.x) + (this.p3.x - this.p2.x)*(point.y - this.p3.y)) /
+                  ((this.p2.y - this.p3.y)*(this.p1.x - this.p3.x) + (this.p3.x - this.p2.x)*(this.p1.y - this.p3.y));
+      var beta = ((this.p3.y - this.p1.y)*(point.x - this.p3.x) + (this.p1.x - this.p3.x)*(point.y - this.p3.y)) /
+                 ((this.p2.y - this.p3.y)*(this.p1.x - this.p3.x) + (this.p3.x - this.p2.x)*(this.p1.y - this.p3.y));
+      var gamma = 1.0 - alpha - beta;
+
+      return (alpha > 0 && beta > 0 && gamma > 0);
+    }
+
     // scale points from [A, B] to [C, D]
     // xA => old x min, xB => old x max
     // yA => old y min, yB => old y max
@@ -132,6 +129,7 @@
       this.p1.rescale(xA, xB, yA, yB, xC, xD, yC, yD);
       this.p2.rescale(xA, xB, yA, yB, xC, xD, yC, yD);
       this.p3.rescale(xA, xB, yA, yB, xC, xD, yC, yD);
+      // recalculate the centroid
       this.centroid();
     }
 
@@ -153,10 +151,6 @@
 
     yMax() {
       return Math.max(this.p1.y, this.p2.y, this.p3.y);
-    }
-
-    toString() {
-      return '(' + this.p1.x + ',' + this.p1.y + '), (' + this.p2.x + ',' + this.p2.y + '), (' + this.p3.x + ',' + this.p3.y + ')';
     }
   }
 
@@ -195,36 +189,36 @@
       ctx.closePath();
     }
 
-    setColor(color) {
-      this.color = color || this.canvasColorAtPoint();
+
+    // converts to string
+    // returns something like:
+    // "(X,Y)"
+    // used in the pointmap to detect unique points
+    toString() {
+      return '(' + this.x + ',' + this.y + ')' ;
     }
 
     // grab the color of the canvas at the point
-    canvasColorAtPoint(imageData) {
-      // console.log(imageData);
-      var a = performance.now();
+    // requires imagedata from canvas so we dont grab
+    // each point individually, which is really expensive
+    canvasColorAtPoint(imageData, colorSpace) {
+      colorSpace = colorSpace || 'hsla';
+      // only find the canvas color if we dont already know it
       if (!this._canvasColor) {
         // imageData array is flat, goes by rows then cols, four values per pixel
         var idx = (Math.floor(this.y) * imageData.width * 4) + (Math.floor(this.x) * 4);
-        this._canvasColor = rgbToHsla(Array.prototype.slice.call(imageData.data, idx, idx + 4));
+
+        if (colorSpace === 'hsla') {
+          this._canvasColor = rgbToHsla(Array.prototype.slice.call(imageData.data, idx, idx + 4));
+        }
+        else {
+          this._canvasColor = 'rgb(' + Array.prototype.slice.call(imageData.data, idx, idx + 3).join() + ')';
+        }
       }
       else {
         return this._canvasColor;
       }
-
-      var b = performance.now();
-      canvasColor += (b-a);
       return this._canvasColor;
-    }
-
-    /**
-     * converts to string
-     * returns something like:
-     * "(X,Y)"
-     * @returns {String}
-     */
-    toString() {
-      return '(' + this.x + ',' + this.y + ')' ;
     }
 
     getCoords() {
@@ -328,11 +322,12 @@
         this.canvas.addEventListener('mousemove', (e) => {
           var rect = canvas.getBoundingClientRect();
           this.mousePosition = new Point(e.clientX - rect.left, e.clientY - rect.top);
-          // this.mousePosition.render(this.ctx);
+          this.hover();
         }, false);
 
         this.canvas.addEventListener('mouseout', (e) => {
           this.mousePosition = false;
+          this.hover();
         }, false);
       }
     }
@@ -350,6 +345,15 @@
           lightness = (lightness + 200 - lightness*2) / 3;
           color[2] = lightness + '%';
           color[3] = 0.25;
+          return color.join(',');
+        },
+        hoverColor: function(color) {
+          color = color.split(',');
+          var lightness = parseInt(color[2]);
+          lightness = 100 - lightness;
+          color[2] = lightness + '%';
+          // alpha
+          color[3] = 0.5;
           return color.join(',');
         },
         onDarkBackground: function(color) { return; },
@@ -373,37 +377,25 @@
     randomize(min, max, minEdge, maxEdge, minGradients, maxGradients, colors) {
       // colors param is optional
       this.colors = colors || this.colors;
-console.time('randomize');
-      triangles = 0;
-      canvasColor = 0;
 
-      console.time('resizeCanvas');
       this.resizeCanvas();
-      console.timeEnd('resizeCanvas');
 
-      console.time('generateNewPoints');
       this.generateNewPoints(min, max, minEdge, maxEdge);
-      console.timeEnd('generateNewPoints');
 
-      console.time('triangulate');
       this.triangulate();
-      console.timeEnd('triangulate');
 
-      console.time('generateGradients');
       this.generateGradients(minGradients, maxGradients);
-      console.timeEnd('generateGradients');
 
-      console.time('render');
       this.render();
-      console.timeEnd('render');
-
-      console.table([{triangles, canvasColor}]);
-console.timeEnd('randomize');
     }
 
     // creates a hidden canvas for hover detection
     createShadowCanvas() {
       this.shadowCanvas = document.createElement('canvas');
+      this.canvas.parentElement.appendChild(this.shadowCanvas);
+      this.shadowCtx = this.shadowCanvas.getContext('2d');
+
+      // this.canvas.style.display = 'none';
     }
 
     generateNewPoints(min, max, minEdge, maxEdge) {
@@ -638,11 +630,10 @@ console.timeEnd('randomize');
       this.canvas.width = this.width = parent.offsetWidth;
       this.canvas.height = this.height = parent.offsetHeight;
 
-      // if (this.shadowCanvas) {
-      //   parent = this.shadowCanvas.parentElement;
-      //   this.shadowCanvas.width = this.width = parent.offsetWidth;
-      //   this.shadowCanvas.height = this.height = parent.offsetHeight;
-      // }
+      if (this.shadowCanvas) {
+        this.shadowCanvas.width = this.width = parent.offsetWidth;
+        this.shadowCanvas.height = this.height = parent.offsetHeight;
+      }
     }
 
     // moves points/triangles based on new size of canvas
@@ -691,8 +682,45 @@ console.timeEnd('randomize');
       this.render();
     }
 
+    hover() {
+      if (this.mousePosition) {
+        var rgb = this.mousePosition.canvasColorAtPoint(this.shadowImageData, 'rgb').replace('rgb(', '').replace(')', '').split(',');
+        var hex = rgbToHex(rgb);
+        var dec = parseInt(hex, 16);
+
+        // is probably triangle with that index, but
+        // edges can be fuzzy so double check
+        if (dec >= 0 && dec < this.triangles.length && this.triangles[dec].pointInTriangle(this.mousePosition)) {
+
+          if (this.lastTriangle !== dec){
+            // render the hovered triangle
+            var fill = this.options.hoverColor(this.triangles[dec].color);
+            this.triangles[dec].render(this.ctx, fill, false);
+
+            // clear the last triangle
+            this.clearHoveredTriangle();
+          }
+
+          this.lastTriangle = dec;
+        }
+      }
+      else {
+        this.clearHoveredTriangle();
+      }
+    }
+
+    clearHoveredTriangle() {
+      // redraw the last triangle that was hovered over
+      if (this.lastTriangle) {
+        var lastTriangle = this.triangles[this.lastTriangle];
+        // draw over the triangle with the fill as stroke
+        // since the stroke can have opacity so the color won't be off
+        lastTriangle.render(this.ctx, lastTriangle.color, lastTriangle.color);
+        lastTriangle.render(this.ctx, lastTriangle.color, lastTriangle.stroke);
+      }
+    }
+
     render() {
-      // console.time('render');
       // empty the canvas
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
@@ -712,7 +740,6 @@ console.timeEnd('randomize');
       if (this.options.showCentroids) {
         this.renderCentroids();
       }
-      // console.timeEnd('render');
 
       // throw events for light / dark text
       var centerColor = this.center.canvasColorAtPoint();
@@ -778,7 +805,9 @@ console.timeEnd('randomize');
     }
 
     renderTriangles(triangles, edges) {
-      console.time('rendering ' + this.triangles.length + ' triangles');
+      // get entire canvas image data now in a big typed array
+      // this way we dont have to pick for each point individually
+      // its like 50x faster this way
       var imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
 
       // save this for later
@@ -787,19 +816,33 @@ console.timeEnd('randomize');
       for (var i = 0; i < this.triangles.length; i++) {
         // the color is determined by grabbing the color of the canvas
         // (where we drew the gradient) at the center of the triangle
+
+        this.triangles[i].color = this.triangles[i].colorAtCentroid(imageData);
+
         if (triangles && edges) {
-          this.triangles[i].render(this.ctx, this.triangles[i].colorAtCentroid(imageData), this.options.edgeColor(this.triangles[i].colorAtCentroid(imageData)));
+          this.triangles[i].stroke = this.options.edgeColor(this.triangles[i].colorAtCentroid(imageData));
+          this.triangles[i].render(this.ctx);
         }
         else if (triangles) {
           // triangles only
-          this.triangles[i].render(this.ctx, this.triangles[i].colorAtCentroid(imageData));
+          this.triangles[i].stroke = this.triangles[i].color;
+          this.triangles[i].render(this.ctx);
         }
         else if (edges) {
           // edges only
-          this.triangles[i].renderEdges(this.ctx, this.options.edgeColor(this.triangles[i].colorAtCentroid(imageData)));
+          this.triangles[i].stroke = this.options.edgeColor(this.triangles[i].colorAtCentroid(imageData));
+          this.triangles[i].render(this.ctx, false);
+        }
+
+        if (this.shadowCanvas) {
+          var color = '#' + ('000000' + i.toString(16)).slice(-6);
+          this.triangles[i].render(this.shadowCtx, color);
         }
       }
-      console.timeEnd('rendering ' + this.triangles.length + ' triangles');
+
+      if (this.shadowCanvas) {
+        this.shadowImageData = this.shadowCtx.getImageData(0, 0, this.canvas.width, this.canvas.height);
+      }
     }
 
     // renders the points of the triangles
@@ -1075,13 +1118,12 @@ console.timeEnd('randomize');
     return 'hsla(' + Math.round(h*360) + ',' + Math.round(s*100) + '%,' + Math.round(l*100) + '%,1)';
   }
 
-})();
+  function rgbToHex(rgb) {
+    rgb = rgb.map(function(x) {
+      x = parseInt(x).toString(16);
+      return (x.length === 1) ? '0' + x : x;
+    });
+    return rgb.join('');
+  }
 
-// TODO:
-// custom number of colors?
-// additional radgrads to make blobs or more interesting color transitions
-// rotate/scale radgrad to get ellipse
-//
-// hover effects
-// - if a point is inside a triangle
-// ripple?
+})();
