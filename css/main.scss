@@ -45,11 +45,29 @@ h1, h2, h3, h4, h5 {
   margin-bottom: 0.5em;
 }
 
-.form > * {
-  opacity: 0.3;
+.form {
 
-  &:hover {
-    opacity: 1.0;
+  &.light {
+    color: white;
+  }
+
+  &.dark {
+    color: black;
+  }
+
+  &.light,
+  &.dark {
+    input, button {
+      color: black;
+    }
+  }
+
+  & > * {
+    opacity: 0.3;
+
+    &:hover {
+      opacity: 1.0;
+    }
   }
 }
 

@@ -295,7 +295,7 @@
 
       this.resizeCanvas();
       this.points = [];
-      this.colors = ['white', 'white', 'white']
+      this.colors = this.options.colors;
       this.pointMap = new PointMap();
 
       this.mousePosition = false;
@@ -324,6 +324,8 @@
         showCentroids: false,
         showEdges: true,
         hover: true,
+
+        colors: ['hsla(0, 0%, 100%, 1)', 'hsla(0, 0%, 50%, 1)', 'hsla(0, 0%, 0%, 1)'],
 
         resizeMode: 'scalePoints',
         // 'newPoints' - generates a new set of points for the new size
@@ -365,6 +367,7 @@
     }
 
     // clear and create a fresh set of random points
+    // all args are optional
     randomize(min, max, minEdge, maxEdge, minGradients, maxGradients, colors) {
       // colors param is optional
       this.colors = colors || this.colors;
@@ -695,7 +698,7 @@
 
     clearHoveredTriangle() {
       // redraw the last triangle that was hovered over
-      if (this.lastTriangle) {
+      if (this.lastTriangle && this.lastTriangle >= 0 && this.lastTriangle < this.triangles.length) {
         var lastTriangle = this.triangles[this.lastTriangle];
         // draw over the triangle with the fill as stroke
         // since the stroke can have opacity so the color won't be off
@@ -920,10 +923,10 @@
   // lets get this show on the road
   let prettyDelaunay = new PrettyDelaunay(canvas, {
     onDarkBackground: function() {
-      form.style.color = 'white';
+      form.className = 'form light';
     },
     onLightBackground: function() {
-      form.style.color = 'black';
+      form.className = 'form dark';
     },
   });
 
@@ -1088,7 +1091,7 @@
     if (max === min){
         h = s = 0; // achromatic
     }
-    else{
+    else {
         var d = max - min;
         s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
         switch(max){
