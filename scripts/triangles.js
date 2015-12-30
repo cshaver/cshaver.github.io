@@ -748,6 +748,7 @@
 
     renderNewGradient(minGradients, maxGradients) {
       this.generateGradients(minGradients, maxGradients);
+      this.triangulate();
       this.render();
     }
 
