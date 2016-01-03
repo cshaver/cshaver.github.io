@@ -43,6 +43,70 @@
     }
   }
 
+  var Cookies = {
+    getItem: function(sKey) {
+      if (!sKey) { return null; }
+      return decodeURIComponent(
+        document.cookie.replace(
+          new RegExp(
+              '(?:(?:^|.*;)\\s*'                                        +
+              encodeURIComponent(sKey).replace(/[\-\.\+\*]/g, '\\$&')   +
+              '\\s*\\=\\s*([^;]*).*$)|^.*$'), '$1')
+            ) || null;
+    },
+
+    setItem: function(sKey, sValue, vEnd, sPath, sDomain, bSecure) {
+      if (!sKey || /^(?:expires|max\-age|path|domain|secure)$/i.test(sKey)) { return false; }
+      var sExpires = '';
+      if (vEnd) {
+        switch (vEnd.constructor) {
+          case Number:
+            sExpires = vEnd === Infinity ? '; expires=Fri, 31 Dec 9999 23:59:59 GMT' : '; max-age=' + vEnd;
+            break;
+          case String:
+            sExpires = '; expires=' + vEnd;
+            break;
+          case Date:
+            sExpires = '; expires=' + vEnd.toUTCString();
+            break;
+        }
+      }
+      document.cookie = encodeURIComponent(sKey) +
+        '=' +
+        encodeURIComponent(sValue) +
+        sExpires +
+        (sDomain ? '; domain=' +
+        sDomain : '') +
+        (sPath ? '; path=' +
+        sPath : '') +
+        (bSecure ? '; secure' : '');
+      return true;
+    },
+
+    removeItem: function(sKey, sPath, sDomain) {
+      if (!this.hasItem(sKey)) { return false; }
+      document.cookie = encodeURIComponent(sKey)    +
+        '=; expires=Thu, 01 Jan 1970 00:00:00 GMT'  +
+        (sDomain ? '; domain=' + sDomain : '')      +
+        (sPath   ? '; path='   + sPath   : '');
+      return true;
+    },
+
+    hasItem: function(sKey) {
+      if (!sKey) { return false; }
+      return (new RegExp('(?:^|;\\s*)' + encodeURIComponent(sKey)
+        .replace(/[\-\.\+\*]/g, '\\$&') + '\\s*\\='))
+        .test(document.cookie);
+    },
+
+    keys: function() {
+      var aKeys = document.cookie.replace(/((?:^|\s*;)[^\=]+)(?=;|$)|^\s*|\s*(?:\=[^;]*)?(?:\1|$)/g, '')
+        .split(/\s*(?:\=[^;]*)?;\s*/);
+      for (var nLen = aKeys.length, nIdx = 0; nIdx < nLen; nIdx++) { aKeys[nIdx] = decodeURIComponent(aKeys[nIdx]); }
+      return aKeys;
+    },
+  };
+
   // color helper functions
   class Color {
 
@@ -404,7 +468,7 @@
      */
     constructor(canvas, options) {
       // merge given options with defaults
-      this.options = Object.assign({}, this.defaults(), (options || {}));
+      this.options = Object.assign({}, PrettyDelaunay.defaults(), (options || {}));
 
       this.canvas = canvas;
       this.ctx = canvas.getContext('2d');
@@ -432,7 +496,7 @@
       }
     }
 
-    defaults() {
+    static defaults() {
       return {
         showTriangles: true,
         showPoints: false,
@@ -1077,15 +1141,21 @@
 
   var minPoints, maxPoints, minEdgePoints, maxEdgePoints, minGradients, maxGradients, colors;
 
-  // lets get this show on the road
-  let prettyDelaunay = new PrettyDelaunay(canvas, {
+  var showTriangles, showPoints, showCircles, showCentroids, showEdges;
+
+  var options = {
     onDarkBackground: function() {
       form.className = 'form light';
     },
     onLightBackground: function() {
       form.className = 'form dark';
     },
-  });
+  };
+
+  getCookies();
+
+  // initialize the PrettyDelaunay object
+  let prettyDelaunay = new PrettyDelaunay(canvas, options);
 
   // initial generation
   runDelaunay();
@@ -1096,7 +1166,7 @@
 
   // get options and re-randomize
   function runDelaunay() {
-    getOptions();
+    getRandomizeOptions();
     prettyDelaunay.randomize(minPoints, maxPoints, minEdgePoints, maxEdgePoints, minGradients, maxGradients, colors);
   }
 
@@ -1120,8 +1190,53 @@
     return colors;
   }
 
+  function getCookies() {
+    var defaults = PrettyDelaunay.defaults();
+
+    showTriangles = Cookies.getItem('DelaunayShowTriangles');
+    showPoints    = Cookies.getItem('DelaunayShowPoints');
+    showCircles   = Cookies.getItem('DelaunayShowCircles');
+    showCentroids = Cookies.getItem('DelaunayShowCentroids');
+    showEdges     = Cookies.getItem('DelaunayShowEdges');
+
+    if (showTriangles) {
+      options.showTriangles = showTriangles = showTriangles === 'true' ? true : false;
+    }
+    else {
+      showTriangles = defaults.showTriangles;
+    }
+
+    if (showPoints) {
+      options.showPoints = showPoints = showPoints === 'true' ? true : false;
+    }
+    else {
+      showPoints = defaults.showPoints;
+    }
+
+    if (showCircles) {
+      options.showCircles = showCircles = showCircles === 'true' ? true : false;
+    }
+    else {
+      showCircles = defaults.showCircles;
+    }
+
+    if (showCentroids) {
+      options.showCentroids = showCentroids = showCentroids === 'true' ? true : false;
+    }
+    else {
+      showCentroids = defaults.showCentroids;
+    }
+
+    if (showEdges) {
+      options.showEdges = showEdges = showEdges === 'true' ? true : false;
+    }
+    else {
+      showEdges = defaults.showEdges;
+    }
+  }
+
   // get options from input fields
-  function getOptions() {
+  function getRandomizeOptions() {
     minPoints = parseInt(minInput.value);
     maxPoints = parseInt(maxInput.value);
     minEdgePoints = parseInt(minEdgeInput.value);
@@ -1165,38 +1280,48 @@
 
   // click the button to regen colors only
   generateGradientButton.addEventListener('click', function() {
-    getOptions();
+    getRandomizeOptions();
     prettyDelaunay.renderNewGradient(minGradients, maxGradients);
   });
 
   // click the button to regen colors only
   generateTrianglesButton.addEventListener('click', function() {
-    getOptions();
+    getRandomizeOptions();
     prettyDelaunay.renderNewTriangles(minPoints, maxPoints, minEdgePoints, maxEdgePoints);
   });
 
   // turn Triangles off/on
   toggleTrianglesButton.addEventListener('click', function() {
+    showTriangles = !showTriangles;
+    Cookies.setItem('DelaunayShowTriangles', showTriangles);
     prettyDelaunay.toggleTriangles();
   });
 
   // turn Points off/on
   togglePointsButton.addEventListener('click', function() {
+    showPoints = !showPoints;
+    Cookies.setItem('DelaunayShowPoints', showPoints);
     prettyDelaunay.togglePoints();
   });
 
   // turn Circles off/on
   toggleCirclesButton.addEventListener('click', function() {
+    showCircles = !showCircles;
+    Cookies.setItem('DelaunayShowCircles', showCircles);
     prettyDelaunay.toggleCircles();
   });
 
   // turn Centroids off/on
   toggleCentroidsButton.addEventListener('click', function() {
+    showCentroids = !showCentroids;
+    Cookies.setItem('DelaunayShowCentroids', showCentroids);
     prettyDelaunay.toggleCentroids();
   });
 
   // turn Edges off/on
   toggleEdgesButton.addEventListener('click', function() {
+    showEdges = !showEdges;
+    Cookies.setItem('DelaunayShowEdges', showEdges);
     prettyDelaunay.toggleEdges();
   });
 
