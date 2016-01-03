@@ -43,6 +43,97 @@
     }
   }
 
+  // color helper functions
+  class Color {
+
+    static hexToRgba(hex) {
+      hex = hex.replace('#','');
+      var r = parseInt(hex.substring(0,2), 16);
+      var g = parseInt(hex.substring(2,4), 16);
+      var b = parseInt(hex.substring(4,6), 16);
+
+      return 'rgba(' + r + ',' + g + ',' + b + ',1)';
+    }
+
+    static hexToRgbaArray(hex) {
+      hex = hex.replace('#','');
+      var r = parseInt(hex.substring(0,2), 16);
+      var g = parseInt(hex.substring(2,4), 16);
+      var b = parseInt(hex.substring(4,6), 16);
+
+      return [r, g, b];
+    }
+
+    /**
+   * Converts an RGB color value to HSL. Conversion formula
+   * adapted from http://en.wikipedia.org/wiki/HSL_color_space.
+   * Assumes r, g, and b are contained in the set [0, 255] and
+   * returns h, s, and l in the set [0, 1].
+   *
+   * @param   Number  r       The red color value
+   * @param   Number  g       The green color value
+   * @param   Number  b       The blue color value
+   * @return  Array           The HSL representation
+   */
+    static rgbToHsla(rgb){
+      var r = rgb[0]/255, g = rgb[1]/255, b = rgb[2]/255;
+      var max = Math.max(r, g, b), min = Math.min(r, g, b);
+      var h, s, l = (max + min) / 2;
+
+      if (max === min){
+          h = s = 0; // achromatic
+      }
+      else {
+          var d = max - min;
+          s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+          switch(max){
+              case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+              case g: h = (b - r) / d + 2; break;
+              case b: h = (r - g) / d + 4; break;
+          }
+          h /= 6;
+      }
+
+      return 'hsla(' + Math.round(h*360) + ',' + Math.round(s*100) + '%,' + Math.round(l*100) + '%,1)';
+    }
+
+    static hslaAdjustAlpha(color, alpha) {
+      color = color.split(',');
+
+      if (typeof alpha !== 'function') {
+        color[3] = alpha;
+      }
+      else {
+        color[3] = alpha(parseInt(color[3]));
+      }
+
+      color[3] += ')';
+      return color.join(',');
+    }
+
+    static hslaAdjustLightness(color, lightness) {
+      color = color.split(',');
+
+      if (typeof lightness !== 'function') {
+        color[2] = lightness;
+      }
+      else {
+        color[2] = lightness(parseInt(color[2]));
+      }
+
+      color[2] += '%';
+      return color.join(',');
+    }
+
+    static rgbToHex(rgb) {
+      rgb = rgb.map(function(x) {
+        x = parseInt(x).toString(16);
+        return (x.length === 1) ? '0' + x : x;
+      });
+      return rgb.join('');
+    }
+  }
+
   /**
    * Represents a triangle
    * @class
@@ -73,6 +164,15 @@
       ctx.closePath();
       ctx.strokeStyle = stroke || this.stroke || this.color;
       ctx.fillStyle = color || this.color;
+      if (color !== false && stroke !== false) {
+        // draw the stroke using the fill color first
+        // so that the points of adjacent triangles
+        // dont overlap a bunch and look "starry"
+        var stroke = ctx.strokeStyle;
+        ctx.strokeStyle = ctx.fillStyle;
+        ctx.stroke();
+        ctx.strokeStyle = stroke;
+      }
       if (color !== false) {
         ctx.fill();
       }
@@ -131,6 +231,22 @@
       this.p3.rescale(xA, xB, yA, yB, xC, xD, yC, yD);
       // recalculate the centroid
       this.centroid();
+    }
+
+    maxX() {
+      return Math.max(this.p1.x, this.p2.x, this.p3.x);
+    }
+
+    maxY() {
+      return Math.max(this.p1.y, this.p2.y, this.p3.y);
+    }
+
+    minX() {
+      return Math.min(this.p1.x, this.p2.x, this.p3.x);
+    }
+
+    minY() {
+      return Math.min(this.p1.y, this.p2.y, this.p3.y);
     }
 
     getPoints() {
@@ -193,7 +309,7 @@
         var idx = (Math.floor(this.y) * imageData.width * 4) + (Math.floor(this.x) * 4);
 
         if (colorSpace === 'hsla') {
-          this._canvasColor = rgbToHsla(Array.prototype.slice.call(imageData.data, idx, idx + 4));
+          this._canvasColor = Color.rgbToHsla(Array.prototype.slice.call(imageData.data, idx, idx + 4));
         }
         else {
           this._canvasColor = 'rgb(' + Array.prototype.slice.call(imageData.data, idx, idx + 3).join() + ')';
@@ -331,30 +447,57 @@
         // 'newPoints' - generates a new set of points for the new size
         // 'scalePoints' - linearly scales existing points and re-triangulates
 
+        // events triggered when the center of the background
+        // is greater or less than 50 lightness in hsla
+        // intended to adjust some text that is on top
         onDarkBackground: function(color) { return; },
         onLightBackground: function(color) { return; },
+
+        // triggered when hovered over triangle
+        onTriangleHover: function(triangle, ctx, options) {
+          var fill = options.hoverColor(triangle.color);
+          var stroke = fill;
+          triangle.render(ctx, options.showEdges ? fill : false, options.showEdges ? false : stroke);
+        },
 
         // returns hsla color for triangle edge
         // as a function of the triangle fill color
         edgeColor: function(color) {
-          color = color.split(',');
-          var lightness = parseInt(color[2]);
-          lightness = (lightness + 200 - lightness*2) / 3;
-          color[2] = lightness + '%';
-          color[3] = 0.25;
-          return color.join(',');
+          color = Color.hslaAdjustLightness(color, function(lightness) {
+            return (lightness + 200 - lightness*2) / 3;
+          });
+          color = Color.hslaAdjustAlpha(color, 0.25);
+          return color;
+        },
+
+        // returns hsla color for triangle edge
+        // as a function of the triangle fill color
+        pointColor: function(color) {
+          color = Color.hslaAdjustLightness(color, function(lightness) {
+            return (lightness + 200 - lightness*2) / 3;
+          });
+          color = Color.hslaAdjustAlpha(color, 1);
+          return color;
+        },
+
+        // returns hsla color for triangle edge
+        // as a function of the triangle fill color
+        centroidColor: function(color) {
+          color = Color.hslaAdjustLightness(color, function(lightness) {
+            return (lightness + 200 - lightness*2) / 3;
+          });
+          color = Color.hslaAdjustAlpha(color, 0.25);
+          return color;
         },
 
         // returns hsla color for triangle hover fill
         // as a function of the triangle fill color
         hoverColor: function(color) {
-          color = color.split(',');
-          var lightness = parseInt(color[2]);
-          lightness = 100 - lightness;
-          color[2] = lightness + '%';
-          // alpha
-          color[3] = 0.5;
-          return color.join(',');
+          color = Color.hslaAdjustLightness(color, function(lightness) {
+            return 100 - lightness;
+          });
+          color = Color.hslaAdjustAlpha(color, 0.5);
+          return color;
         },
       }
     }
@@ -389,7 +532,7 @@
       this.canvas.parentElement.appendChild(this.shadowCanvas);
       this.shadowCtx = this.shadowCanvas.getContext('2d');
 
-      // this.canvas.style.display = 'none';
+      this.shadowCanvas.style.display = 'none';
     }
 
     generateNewPoints(min, max, minEdge, maxEdge) {
@@ -672,38 +815,44 @@
     hover() {
       if (this.mousePosition) {
         var rgb = this.mousePosition.canvasColorAtPoint(this.shadowImageData, 'rgb').replace('rgb(', '').replace(')', '').split(',');
-        var hex = rgbToHex(rgb);
+        var hex = Color.rgbToHex(rgb);
         var dec = parseInt(hex, 16);
 
         // is probably triangle with that index, but
         // edges can be fuzzy so double check
         if (dec >= 0 && dec < this.triangles.length && this.triangles[dec].pointInTriangle(this.mousePosition)) {
+          // clear the last triangle
+          this.resetTriangle();
 
           if (this.lastTriangle !== dec){
             // render the hovered triangle
-            var fill = this.options.hoverColor(this.triangles[dec].color);
-            this.triangles[dec].render(this.ctx, fill, false);
-
-            // clear the last triangle
-            this.clearHoveredTriangle();
+            this.options.onTriangleHover(this.triangles[dec], this.ctx, this.options);
           }
 
           this.lastTriangle = dec;
         }
       }
       else {
-        this.clearHoveredTriangle();
+        this.resetTriangle();
       }
     }
 
-    clearHoveredTriangle() {
+    resetTriangle() {
       // redraw the last triangle that was hovered over
       if (this.lastTriangle && this.lastTriangle >= 0 && this.lastTriangle < this.triangles.length) {
         var lastTriangle = this.triangles[this.lastTriangle];
-        // draw over the triangle with the fill as stroke
-        // since the stroke can have opacity so the color won't be off
-        lastTriangle.render(this.ctx, lastTriangle.color, lastTriangle.color);
-        lastTriangle.render(this.ctx, lastTriangle.color, lastTriangle.stroke);
+
+        // find the bounding points of the last triangle
+        // expand a bit for edges
+        var minX = lastTriangle.minX() - 1;
+        var minY = lastTriangle.minY() - 1;
+        var maxX = lastTriangle.maxX() + 1;
+        var maxY = lastTriangle.maxY() + 1;
+
+        // reset that portion of the canvas to its original render
+        this.ctx.putImageData(this.renderedImageData, 0, 0, minX, minY, maxX - minX, maxY - minY);
+
+        this.lastTriangle = false;
       }
     }
 
@@ -713,9 +862,30 @@
 
       this.renderGradient();
 
+      // get entire canvas image data of in a big typed array
+      // this way we dont have to pick for each point individually
+      // it's like 50x faster this way
+      this.gradientImageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
+
       // renders triangles, edges, and shadow canvas for hover detection
       this.renderTriangles(this.options.showTriangles, this.options.showEdges);
 
+      this.renderExtras();
+
+      this.renderedImageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
+
+      // throw events for light / dark text
+      var centerColor = this.center.canvasColorAtPoint();
+
+      if (parseInt(centerColor.split(',')[2]) < 50) {
+        this.options.onDarkBackground(centerColor);
+      }
+      else {
+        this.options.onLightBackground(centerColor);
+      }
+    }
+
+    renderExtras() {
       if (this.options.showPoints) {
         this.renderPoints();
       }
@@ -726,16 +896,6 @@
 
       if (this.options.showCentroids) {
         this.renderCentroids();
-      }
-
-      // throw events for light / dark text
-      var centerColor = this.center.canvasColorAtPoint();
-
-      if (parseInt(centerColor.split(',')[2]) < 50) {
-        this.options.onDarkBackground(centerColor);
-      }
-      else {
-        this.options.onLightBackground(centerColor);
       }
     }
 
@@ -793,22 +953,18 @@
     }
 
     renderTriangles(triangles, edges) {
-      // get entire canvas image data now in a big typed array
-      // this way we dont have to pick for each point individually
-      // its like 50x faster this way
-      var imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
 
       // save this for later
-      this.center.canvasColorAtPoint(imageData);
+      this.center.canvasColorAtPoint(this.gradientImageData);
 
       for (var i = 0; i < this.triangles.length; i++) {
         // the color is determined by grabbing the color of the canvas
         // (where we drew the gradient) at the center of the triangle
 
-        this.triangles[i].color = this.triangles[i].colorAtCentroid(imageData);
+        this.triangles[i].color = this.triangles[i].colorAtCentroid(this.gradientImageData);
 
         if (triangles && edges) {
-          this.triangles[i].stroke = this.options.edgeColor(this.triangles[i].colorAtCentroid(imageData));
+          this.triangles[i].stroke = this.options.edgeColor(this.triangles[i].colorAtCentroid(this.gradientImageData));
           this.triangles[i].render(this.ctx);
         }
         else if (triangles) {
@@ -818,13 +974,13 @@
         }
         else if (edges) {
           // edges only
-          this.triangles[i].stroke = this.options.edgeColor(this.triangles[i].colorAtCentroid(imageData));
+          this.triangles[i].stroke = this.options.edgeColor(this.triangles[i].colorAtCentroid(this.gradientImageData));
           this.triangles[i].render(this.ctx, false);
         }
 
         if (this.shadowCanvas) {
           var color = '#' + ('000000' + i.toString(16)).slice(-6);
-          this.triangles[i].render(this.shadowCtx, color);
+          this.triangles[i].render(this.shadowCtx, color, false);
         }
       }
 
@@ -836,20 +992,19 @@
     // renders the points of the triangles
     renderPoints() {
       for (var i = 0; i < this.points.length; i++) {
-        this.points[i].render(this.ctx);
+        this.points[i].render(this.ctx, this.options.pointColor(this.points[i].canvasColorAtPoint(this.gradientImageData)));
       }
     }
 
     // draws the circles that define the gradients
     renderGradientCircles() {
-      this.ctx.strokeStyle = 'black';
-
       for (var i = 0; i < this.radialGradients.length; i++) {
         this.ctx.beginPath();
         this.ctx.arc(this.radialGradients[i].x0,
                 this.radialGradients[i].y0,
                 this.radialGradients[i].r0,
                 0, Math.PI*2, true);
+        this.ctx.strokeStyle = (new Point(this.radialGradients[i].x0, this.radialGradients[i].y0)).canvasColorAtPoint(this.gradientImageData);
         this.ctx.stroke();
 
         this.ctx.beginPath();
@@ -857,6 +1012,7 @@
                 this.radialGradients[i].y1,
                 this.radialGradients[i].r1,
                 0, Math.PI*2, true);
+        this.ctx.strokeStyle = (new Point(this.radialGradients[i].x1, this.radialGradients[i].y1)).canvasColorAtPoint(this.gradientImageData);
         this.ctx.stroke();
       }
     }
@@ -864,7 +1020,7 @@
     // render triangle centroids
     renderCentroids() {
       for (var i = 0; i < this.triangles.length; i++) {
-        this.triangles[i].centroid().render(this.ctx);
+        this.triangles[i].centroid().render(this.ctx, this.options.centroidColor(this.triangles[i].colorAtCentroid(this.gradientImageData)));
       }
     }
 
@@ -956,9 +1112,9 @@
     }
     else {
       // use the ones in the inputs
-      colors.push(rgbToHsla(hexToRgbaArray(document.getElementById('color1').value)));
-      colors.push(rgbToHsla(hexToRgbaArray(document.getElementById('color2').value)));
-      colors.push(rgbToHsla(hexToRgbaArray(document.getElementById('color3').value)));
+      colors.push(Color.rgbToHsla(Color.hexToRgbaArray(document.getElementById('color1').value)));
+      colors.push(Color.rgbToHsla(Color.hexToRgbaArray(document.getElementById('color2').value)));
+      colors.push(Color.rgbToHsla(Color.hexToRgbaArray(document.getElementById('color3').value)));
     }
 
     return colors;
@@ -1054,64 +1210,5 @@
     e.preventDefault();
     return false;
   });
-
-  function hexToRgba(hex) {
-    hex = hex.replace('#','');
-    var r = parseInt(hex.substring(0,2), 16);
-    var g = parseInt(hex.substring(2,4), 16);
-    var b = parseInt(hex.substring(4,6), 16);
-
-    return 'rgba(' + r + ',' + g + ',' + b + ',1)';
-  }
-
-  function hexToRgbaArray(hex) {
-    hex = hex.replace('#','');
-    var r = parseInt(hex.substring(0,2), 16);
-    var g = parseInt(hex.substring(2,4), 16);
-    var b = parseInt(hex.substring(4,6), 16);
-
-    return [r, g, b];
-  }
-
-  /**
- * Converts an RGB color value to HSL. Conversion formula
- * adapted from http://en.wikipedia.org/wiki/HSL_color_space.
- * Assumes r, g, and b are contained in the set [0, 255] and
- * returns h, s, and l in the set [0, 1].
- *
- * @param   Number  r       The red color value
- * @param   Number  g       The green color value
- * @param   Number  b       The blue color value
- * @return  Array           The HSL representation
- */
-  function rgbToHsla(rgb){
-    var r = rgb[0]/255, g = rgb[1]/255, b = rgb[2]/255;
-    var max = Math.max(r, g, b), min = Math.min(r, g, b);
-    var h, s, l = (max + min) / 2;
-
-    if (max === min){
-        h = s = 0; // achromatic
-    }
-    else {
-        var d = max - min;
-        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-        switch(max){
-            case r: h = (g - b) / d + (g < b ? 6 : 0); break;
-            case g: h = (b - r) / d + 2; break;
-            case b: h = (r - g) / d + 4; break;
-        }
-        h /= 6;
-    }
-
-    return 'hsla(' + Math.round(h*360) + ',' + Math.round(s*100) + '%,' + Math.round(l*100) + '%,1)';
-  }
-
-  function rgbToHex(rgb) {
-    rgb = rgb.map(function(x) {
-      x = parseInt(x).toString(16);
-      return (x.length === 1) ? '0' + x : x;
-    });
-    return rgb.join('');
-  }
 
 })();
