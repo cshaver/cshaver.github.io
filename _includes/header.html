@@ -1,7 +1,13 @@
 <header class="site-header">
 
-  <h1>{{ site.title_formatted }}<span aria-hidden="true">></span></h1>
-  <h2>{{ site.subhead }}</h2>
+  <div>
+    <h1 data-text="{{ site.title_formatted }}" id="header" data-color="white">{{ site.title_formatted }}</h1>
+    <h2 id="subhead" data-text="{{ site.subhead }}">{{ site.subhead }}</h2>
+  </div>
+
+  <div class="canvas-wrapper">
+    <canvas id="delaunayHero" width="500" height="300"></canvas>
+  </div>
 
 </header>
 {% comment %}

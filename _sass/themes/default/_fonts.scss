@@ -3,12 +3,19 @@
   * Bakery
   * http://www.stereo-type.fr/bakery.html
   */
-@include font-face("Bakery", "#{$-baseurl}/fonts/bakery/bakery", $file-formats: eot ttf otf woff svg);
+// @include font-face("Bakery", "#{$-baseurl}/fonts/bakery/bakery", $file-formats: eot ttf otf woff svg);
 
-$bakery-stack: Bakery, cursive;
-@include void(font-add(bakery, $bakery-stack));
+// $bakery-stack: Bakery, cursive;
+// @include void(font-add(bakery, $bakery-stack));
 
-@import url(https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300|Open+Sans|PT+Mono);
+@import url(https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300|Open+Sans|PT+Mono|Rock+Salt);
+
+/**
+  * Rock Salt
+  * https://www.google.com/fonts/specimen/Rock+Salt
+  */
+$rock-salt-stack: Rock Salt, sans-serif;
+@include void(font-add(rock-salt, $rock-salt-stack));
 
 /**
   * Open Sans Condensed
@@ -16,6 +23,7 @@ $bakery-stack: Bakery, cursive;
   */
 $sans-condensed-stack: Open Sans Condensed, sans-serif;
 @include void(font-add(condensed, $sans-condensed-stack));
+
 
 /**
   * Open Sans

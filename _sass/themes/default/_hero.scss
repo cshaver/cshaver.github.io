@@ -1,38 +1,57 @@
 header {
+  position: relative;
   color: swatch(white);
-  background: url("#{$-baseurl}/images/husk.png") swatch(black) {
-    size: 500px;
-  };
-
-  padding: 4em 0 3em;
+  height: 66vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   @extend %text-center;
 
+  * {
+    z-index: 2;
+    position: relative;
+  }
+
   h1 {
     margin: 0;
-    line-height: 0.75em;
+    line-height: 1.25em;
 
     font: {
       size: 100px;
       weight: normal;
-      family: font(bakery);
+      family: font(rock-salt);
     }
-
-    // TODO: add javascript image load detection so
-    // that the fallback color is shown until image
-    // is loaded
-    @include text-background-fill(url("#{$-baseurl}/images/chalk.png"), swatch(white));
-
-    background-size: 250px;
-    padding: 0.1em 0;
   }
 
   h2 {
-    color: swatch(coral);
     text-transform: uppercase;
     font: {
-      weight: normal;
+      weight: bold;
       family: font(condensed);
     }
+
+    position: relative;
+
+    &:after {
+      position: absolute;
+      top: 1px;
+      left: 1px;
+      width: 100%;
+      content: attr(data-text);
+      text-align: center;
+      color: swatch(white);
+      z-index: -1;
+      font-weight: inherit;
+    }
   }
+}
+
+.canvas-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
 }

@@ -3,7 +3,7 @@
 
   {% include head.html %}
 
-  <body>
+  <body class="light">
 
     {% include header.html %}
 
@@ -13,6 +13,8 @@
 
     {% include footer.html %}
 
+    <script src="{{ "/scripts/pretty-delaunay.js" | prepend: site.baseurl }}"></script>
+    <script src="{{ "/scripts/main.js" | prepend: site.baseurl }}"></script>
   </body>
 
 </html>
