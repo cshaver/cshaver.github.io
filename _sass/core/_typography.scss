@@ -30,13 +30,29 @@
   }
 }
 
+@mixin text-offset-behind($offsetX: 1px, $offsetY:1px, $color: white, $opacity: 1.0) {
+  position: relative;
+
+  &:after {
+    position: absolute;
+    top: $offsetX;
+    left: $offsetY;
+    width: 100%;
+    content: attr(data-text);
+    text-align: center;
+    color: $color;
+    opacity: $opacity;
+    z-index: -1;
+    font-weight: inherit;
+  }
+}
+
 @mixin text-background-fill($background, $fallback) {
   color: $fallback;
   background: $background;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
-
 
 // TODO: make the gradient more customizable
 @mixin text-gradient-fill($top, $bottom) {

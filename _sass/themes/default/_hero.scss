@@ -15,20 +15,13 @@ header {
 
   h1 {
     margin: 0;
-    line-height: 1.25em;
+    line-height: 0.85em;
+    display: inline-block;
 
     font: {
       size: 100px;
       weight: normal;
-      family: font(rock-salt);
-    }
-  }
-
-  h2 {
-    text-transform: uppercase;
-    font: {
-      weight: bold;
-      family: font(condensed);
+      family: font(permanent-marker);
     }
 
     position: relative;
@@ -45,6 +38,17 @@ header {
       font-weight: inherit;
     }
   }
+
+  h2 {
+    font-size: 40px;
+    text-transform: uppercase;
+    font: {
+      weight: bold;
+      family: font(condensed);
+    }
+
+    @include text-offset-behind(1px, 1px, swatch(white), 0.75);
+  }
 }
 
 .canvas-wrapper {
@@ -54,4 +58,35 @@ header {
   right: 0;
   bottom: 0;
   z-index: 0;
+}
+
+.delaunay-button {
+  background: swatch(gray);
+  opacity: 0.5;
+  border: 0;
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  border-radius: 5px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  position: absolute;
+  bottom: 15px;
+  left: 15px;
+
+  &:hover {
+    opacity: 1.0;
+  }
+
+  img {
+    width: 18px;
+    height: 18px;
+  }
+
+  + .delaunay-button {
+    left: ((15px * 2) + 30px);
+  }
 }

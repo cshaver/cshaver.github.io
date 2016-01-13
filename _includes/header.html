@@ -7,6 +7,12 @@
 
   <div class="canvas-wrapper">
     <canvas id="delaunayHero" width="500" height="300"></canvas>
+    <button id="delaunayRedo" class="delaunay-button redo-button" aria-label="Redo Triangles">
+      <img src="{{ "/images/icons/reload.svg" | prepend: site.baseurl }}" alt="Redo Triangles">
+    </button>
+    <a href="https://github.com/cshaver/pretty-delaunay" target="_blank" class="delaunay-button info-button" aria-label="About this trianglulation widget (opens a new window)">
+      <img src="{{ "/images/icons/info.svg" | prepend: site.baseurl }}" alt="About this trianglulation widget (opens a new window)">
+    </a>
   </div>
 
 </header>

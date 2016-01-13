@@ -3,6 +3,7 @@
   var body = document.getElementsByTagName('body')[0];
   var header = document.getElementById('header');
   var subhead = document.getElementById('subhead');
+  var redoButton = document.getElementById('delaunayRedo');
 
   var options = {
     colorPalette: [
@@ -28,6 +29,7 @@
       body.className = 'light';
     },
     onLightBackground: function(color) {
+      // check for really light, change to black
       color = hslaAdjustLightness(color, lighterColor);
       header.dataset.color = color;
       subhead.style.color = color;
@@ -35,6 +37,10 @@
       body.className = 'dark';
     },
   };
+
+  delaunayRedo.addEventListener('click', function() {
+    prettyDelaunay.randomize();
+  });
 
   var prettyDelaunay = new PrettyDelaunay(canvas, options);
   prettyDelaunay.randomize();
