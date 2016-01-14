@@ -25,6 +25,7 @@
     onLightBackground: colorChange,
   };
 
+  // TODO: weight these somehow
   var thingsIBe = [
     'Web Developer',
     'Dungeon Master',
@@ -38,7 +39,10 @@
     'Probably a Wizard',
     'Magical Girl',
     'Aspiring Sailor Scout',
-    'Cries at animals that are friends'
+    'Cries at animals that are friends',
+    'Mathematical!',
+    'What do you call a nosey pepper?',
+    'Jalapeño business!',
   ];
 
   delaunayRedo.addEventListener('click', function() {
@@ -49,10 +53,27 @@
   var prettyDelaunay = new PrettyDelaunay(canvas, options);
   prettyDelaunay.randomize();
 
+  // TODO: prevent repeats
   function randomSubhead() {
-    var newSubhead = thingsIBe[Math.floor(Math.random() * (thingsIBe.length))];
-    subhead.innerHTML = newSubhead;
-    subhead.dataset.text = newSubhead;
+    // joke opener
+    var i;
+    var newSubhead;
+    if (subhead.innerHTML === thingsIBe[thingsIBe.length - 2]) {
+      newSubhead = thingsIBe[thingsIBe.length - 1];
+      subhead.innerHTML = newSubhead;
+      subhead.dataset.text = newSubhead;
+    } else {
+      i = Math.floor(Math.random() * (thingsIBe.length));
+      newSubhead = thingsIBe[i];
+      subhead.innerHTML = newSubhead;
+      subhead.dataset.text = newSubhead;
+
+
+      // DONT SPOIL THE JOKE
+      if (i === thingsIBe.length - 1) {
+        randomSubhead();
+      }
+    }
   }
 
   function colorChange(color) {
