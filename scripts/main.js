@@ -25,13 +25,35 @@
     onLightBackground: colorChange,
   };
 
+  var thingsIBe = [
+    'Web Developer',
+    'Dungeon Master',
+    'Crazy Cat Lady',
+    'Wannabe Magician',
+    'Neat-o Person',
+    'Taco Bell Fangirl',
+    'Pokémon Master',
+    'Rabid Trekkie',
+    'Power Metal Warrior',
+    'Probably a Wizard',
+    'Magical Girl',
+    'Aspiring Sailor Scout',
+    'Cries at animals that are friends'
+  ];
+
   delaunayRedo.addEventListener('click', function() {
     prettyDelaunay.randomize();
+    randomSubhead();
   });
 
   var prettyDelaunay = new PrettyDelaunay(canvas, options);
   prettyDelaunay.randomize();
 
+  function randomSubhead() {
+    var newSubhead = thingsIBe[Math.floor(Math.random() * (thingsIBe.length))];
+    subhead.innerHTML = newSubhead;
+    subhead.dataset.text = newSubhead;
+  }
 
   function colorChange(color) {
     var lightness = hslaGetLightness(color);
