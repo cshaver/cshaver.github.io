@@ -8,14 +8,14 @@
 // $bakery-stack: Bakery, cursive;
 // @include void(font-add(bakery, $bakery-stack));
 
-@import url(https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300|Open+Sans|PT+Mono|Rock+Salt|Permanent+Marker);
+@import url(https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300|Open+Sans|PT+Mono|Permanent+Marker);
 
 /**
   * Rock Salt
   * https://www.google.com/fonts/specimen/Rock+Salt
   */
-$rock-salt-stack: Rock Salt, sans-serif;
-@include void(font-add(rock-salt, $rock-salt-stack));
+// $rock-salt-stack: Rock Salt, sans-serif;
+// @include void(font-add(rock-salt, $rock-salt-stack));
 
 /**
   * Permanent Marker

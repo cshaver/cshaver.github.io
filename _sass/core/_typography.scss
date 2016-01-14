@@ -30,7 +30,7 @@
   }
 }
 
-@mixin text-offset-behind($offsetX: 1px, $offsetY:1px, $color: white, $opacity: 1.0) {
+@mixin text-offset-behind($offsetX: 1px, $offsetY:1px, $color: white, $opacity: 1.0, $z-index: -1) {
   position: relative;
 
   &:after {
@@ -42,7 +42,7 @@
     text-align: center;
     color: $color;
     opacity: $opacity;
-    z-index: -1;
+    z-index: $z-index;
     font-weight: inherit;
   }
 }

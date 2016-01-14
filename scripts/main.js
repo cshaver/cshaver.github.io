@@ -7,35 +7,22 @@
 
   var options = {
     colorPalette: [
-      ['hsla(333,57%,52%, 1)', 'hsla(94,15%,12%, 1)', 'hsla(326,59%,99%, 1)'],
-      ['hsla(347,33%,0%, 1)', 'hsla(162,49%,42%, 1)', 'hsla(104,67%,81%, 1)'],
       ['hsla(318,76%,79%, 1)', 'hsla(313,78%,50%, 1)', 'hsla(255,59%,19%, 1)'],
-      ['hsla(340,45%,54%, 1)', 'hsla(291,46%,18%, 1)', 'hsla(344,18%,83%, 1)'],
-      ['hsla(298,0%,79%, 1)', 'hsla(313,23%,36%, 1)', 'hsla(338,65%,42%, 1)'],
-      ['hsla(227,71%,90%, 1)', 'hsla(34,39%,45%, 1)', 'hsla(291,92%,25%, 1)'],
       ['hsla(166,59%,22%, 1)', 'hsla(39,31%,1%, 1)', 'hsla(208,24%,17%, 1)'],
       ['hsla(247,40%,39%, 1)', 'hsla(235,72%,8%, 1)', 'hsla(276,23%,30%, 1)'],
-      ['hsla(84,5%,19%, 1)', 'hsla(168,84%,92%, 1)', 'hsla(172,31%,15%, 1)'],
       ['hsla(346,57%,27%, 1)', 'hsla(4,85%,48%, 1)', 'hsla(198,20%,1%, 1)'],
       ['hsla(273,32%,59%, 1)', 'hsla(332,87%,2%, 1)', 'hsla(192,43%,17%, 1)'],
-      ['hsla(148,2%,68%, 1)', 'hsla(160,16%,42%, 1)', 'hsla(78,35%,4%, 1)'],
-      ['hsla(7,55%,27%, 1)', 'hsla(203,44%,3%, 1)', 'hsla(332,11%,91%, 1)'],
+      ["hsla(218,48%,22%, 1)", "hsla(301,10%,8%, 1)", "hsla(71,73%,71%, 1)"],
+      ["hsla(23,92%,2%, 1)", "hsla(341,93%,35%, 1)", "hsla(270,6%,26%, 1)"],
+      ["hsla(70,48%,96%, 1)", "hsla(170,79%,70%, 1)", "hsla(157,4%,13%, 1)"],
+      ["hsla(213,9%,46%, 1)", "hsla(354,81%,68%, 1)", "hsla(191,29%,62%, 1)"],
+      ["hsla(4,57%,21%,1)", "hsla(352,54%,49%,1)", "hsla(195,33%,7%,1)"],
+      ["hsla(9,39%,17%, 1)", "hsla(335,53%,12%, 1)", "hsla(334,20%,0%, 1)"],
+      // edges = true
+      ["hsla(300,61%,6%,1)", "hsla(218,96%,10%,1)", "hsla(244,44%,12%,1)"],
     ],
-    onDarkBackground: function(color) {
-      color = hslaAdjustLightness(color, lighterColor);
-      header.dataset.color = color;
-      subhead.style.color = color;
-      console.log(color);
-      body.className = 'light';
-    },
-    onLightBackground: function(color) {
-      // check for really light, change to black
-      color = hslaAdjustLightness(color, lighterColor);
-      header.dataset.color = color;
-      subhead.style.color = color;
-      console.log(color);
-      body.className = 'dark';
-    },
+    onDarkBackground: colorChange,
+    onLightBackground: colorChange,
   };
 
   delaunayRedo.addEventListener('click', function() {
@@ -45,8 +32,29 @@
   var prettyDelaunay = new PrettyDelaunay(canvas, options);
   prettyDelaunay.randomize();
 
+
+  function colorChange(color) {
+    var lightness = hslaGetLightness(color);
+
+    // check for really light, add shadow to text
+    color = hslaAdjustLightness(color, lighterColor);
+    subhead.style.color = color;
+
+    if (lightness > 70) {
+      header.style.color = color;
+      header.className = 'with-shadow';
+    } else {
+      header.style.color = '';
+      header.className = '';
+    }
+  }
+
   function lighterColor(lightness) {
     return (lightness + 200 - lightness * 2) / 3;
+  }
+
+  function hslaGetLightness(color) {
+    return parseInt(color.split(',')[2]);
   }
 
   function hslaAdjustLightness(color, lightness) {
