@@ -65,14 +65,15 @@
     } else {
       i = Math.floor(Math.random() * (thingsIBe.length));
       newSubhead = thingsIBe[i];
+
+      // DONT SPOIL THE JOKE, no repeats
+      if (i === thingsIBe.length - 1 || thingsIBe[i] === subhead.innerHTML) {
+        randomSubhead();
+        return;
+      }
+
       subhead.innerHTML = newSubhead;
       subhead.dataset.text = newSubhead;
-
-
-      // DONT SPOIL THE JOKE
-      if (i === thingsIBe.length - 1) {
-        randomSubhead();
-      }
     }
   }
 
