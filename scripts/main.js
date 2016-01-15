@@ -27,23 +27,77 @@
 
   // TODO: weight these somehow
   var thingsIBe = [
-    'Web Developer',
-    'Dungeon Master',
-    'Crazy Cat Lady',
-    'Wannabe Magician',
-    'Neat-o Person',
-    'Taco Bell Fangirl',
-    'Pokémon Master',
-    'Rabid Trekkie',
-    'Power Metal Warrior',
-    'Probably a Wizard',
-    'Magical Girl',
-    'Aspiring Sailor Scout',
-    'Cries at animals that are friends',
-    'Mathematical!',
-    'What do you call a nosey pepper?',
-    'Jalapeño business!',
+    {
+      text:'Web Developer',
+      weight: 10,
+    },
+    {
+      text:'Dungeon Master',
+      weight: 10,
+    },
+    {
+      text:'Crazy Cat Lady',
+      weight: 10,
+    },
+    {
+      text:'Wannabe Magician',
+      weight: 10,
+    },
+    {
+      text:'Neat-o Person',
+      weight: 10,
+    },
+    {
+      text:'Taco Bell Fangirl',
+      weight: 10,
+    },
+    {
+      text:'Pokémon Master',
+      weight: 10,
+    },
+    {
+      text:'Rabid Trekkie',
+      weight: 10,
+    },
+    {
+      text:'Power Metal Warrior',
+      weight: 10,
+    },
+    {
+      text:'Probably a Wizard',
+      weight: 10,
+    },
+    {
+      text:'Magical Girl',
+      weight: 10,
+    },
+    {
+      text:'Aspiring Sailor Scout',
+      weight: 10,
+    },
+    {
+      text:'Cries at animals that are friends',
+      weight: 4,
+    },
+    {
+      text:'Mathematical!',
+      weight: 10,
+    },
+    {
+      text:'What do you call a nosey pepper?',
+      weight: 4,
+      next: {
+        text:'Jalapeño business!',
+      }
+    },
   ];
+
+  var weightedThings = [];
+
+  var thingsIndex = 0;
+  var currentThing = {};
+
+  initWeightedThings();
 
   delaunayRedo.addEventListener('click', function() {
     prettyDelaunay.randomize();
@@ -53,24 +107,38 @@
   var prettyDelaunay = new PrettyDelaunay(canvas, options);
   prettyDelaunay.randomize();
 
-  // TODO: prevent repeats
+  /**
+   * Helper Functions
+   */
+
+  function initWeightedThings() {
+    for (var i = 0; i < thingsIBe.length; i++) {
+      for (var j = 0; j < thingsIBe[i].weight; j++) {
+        weightedThings.push(i);
+      }
+    }
+  }
+
+  // TODO: weighted
   function randomSubhead() {
-    // joke opener
-    var i;
     var newSubhead;
-    if (subhead.innerHTML === thingsIBe[thingsIBe.length - 2]) {
-      newSubhead = thingsIBe[thingsIBe.length - 1];
+    var i;
+
+    // if current has a next, use next
+    if (currentThing.next) {
+      newSubhead = currentThing.next.text;
+      currentThing = currentThing.next;
+
       subhead.innerHTML = newSubhead;
       subhead.dataset.text = newSubhead;
     } else {
-      i = Math.floor(Math.random() * (thingsIBe.length));
-      newSubhead = thingsIBe[i];
+      do {
+        i = Math.floor(Math.random() * (weightedThings.length));
+      } while (weightedThings[i] === thingsIndex);
 
-      // DONT SPOIL THE JOKE, no repeats
-      if (i === thingsIBe.length - 1 || thingsIBe[i] === subhead.innerHTML) {
-        randomSubhead();
-        return;
-      }
+      thingsIndex = weightedThings[i];
+      currentThing = thingsIBe[thingsIndex];
+      newSubhead = thingsIBe[thingsIndex].text;
 
       subhead.innerHTML = newSubhead;
       subhead.dataset.text = newSubhead;
