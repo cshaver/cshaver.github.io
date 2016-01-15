@@ -1,4 +1,5 @@
 (function() {
+  // set up DOM elements
   var canvas = document.getElementById('delaunayHero');
   var body = document.getElementsByTagName('body')[0];
   var header = document.getElementById('header');
@@ -6,6 +7,7 @@
   var redoButton = document.getElementById('delaunayRedo');
 
   var options = {
+    // colors for triangulation to choose from
     colorPalette: [
       ['hsla(318,76%,79%, 1)', 'hsla(313,78%,50%, 1)', 'hsla(255,59%,19%, 1)'],
       ['hsla(166,59%,22%, 1)', 'hsla(39,31%,1%, 1)', 'hsla(208,24%,17%, 1)'],
@@ -25,7 +27,7 @@
     onLightBackground: colorChange,
   };
 
-  // TODO: weight these somehow
+  // list of weighted subheads
   var thingsIBe = [
     {
       text:'Web Developer',
@@ -93,24 +95,27 @@
   ];
 
   var weightedThings = [];
-
   var thingsIndex = 0;
   var currentThing = {};
 
   initWeightedThings();
 
+  // on redo button make a new triangulation and get a new subhead
   delaunayRedo.addEventListener('click', function() {
     prettyDelaunay.randomize();
     randomSubhead();
   });
 
+  // init delaunay plugin and get one triangulation
   var prettyDelaunay = new PrettyDelaunay(canvas, options);
   prettyDelaunay.randomize();
 
   /**
    * Helper Functions
-   */
+  **/
 
+  // add index to array "weight" number of times
+  // so an item with weight two will be added twice
   function initWeightedThings() {
     for (var i = 0; i < thingsIBe.length; i++) {
       for (var j = 0; j < thingsIBe[i].weight; j++) {
@@ -119,12 +124,12 @@
     }
   }
 
-  // TODO: weighted
   function randomSubhead() {
     var newSubhead;
     var i;
 
     // if current has a next, use next
+    // this is for jokes
     if (currentThing.next) {
       newSubhead = currentThing.next.text;
       currentThing = currentThing.next;
@@ -132,12 +137,19 @@
       subhead.innerHTML = newSubhead;
       subhead.dataset.text = newSubhead;
     } else {
+      // choose an index from the weighted array
+      // weighted array contains indeces from subhead data array
       do {
         i = Math.floor(Math.random() * (weightedThings.length));
       } while (weightedThings[i] === thingsIndex);
 
+      // actual index from weighted array
       thingsIndex = weightedThings[i];
+
+      // save current subhead data so we can look at "next" later
       currentThing = thingsIBe[thingsIndex];
+
+      // get the actual text
       newSubhead = thingsIBe[thingsIndex].text;
 
       subhead.innerHTML = newSubhead;
@@ -148,10 +160,14 @@
   function colorChange(color) {
     var lightness = hslaGetLightness(color);
 
-    // check for really light, add shadow to text
+    // get a more contrasted version of the color
     color = hslaAdjustLightness(color, lighterColor);
+
+    // always change the subhead text to match new color
     subhead.style.color = color;
 
+    // for really light colors, add a shadow to the title
+    // so that its a little more readable
     if (lightness > 70) {
       header.style.color = color;
       header.className = 'with-shadow';
@@ -161,6 +177,8 @@
     }
   }
 
+  // not necessarily "lighter", more like
+  // a lightness on the other side of the spectrum
   function lighterColor(lightness) {
     return (lightness + 200 - lightness * 2) / 3;
   }
