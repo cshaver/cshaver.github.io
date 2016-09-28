@@ -1,3 +1,8 @@
-_site
+.deploy*/
+.DS_Store
 .sass-cache
-.jekyll-metadata
+*.log
+db.json
+node_modules/
+public/
+Thumbs.db
