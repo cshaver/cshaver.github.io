@@ -5,13 +5,13 @@
     <h2 id="subhead" data-text="{{ site.subhead }}">{{ site.subhead }}</h2>
   </div>
 
-  <div class="canvas-wrapper">
+  <div class="delaunay-canvas-wrapper">
     <canvas id="delaunayHero" width="500" height="300"></canvas>
     <button id="delaunayRedo" class="delaunay-button redo-button" aria-label="Redo Triangles">
-      <img src="{{ "/images/icons/reload.svg" | prepend: site.baseurl }}" alt="Redo Triangles">
+      <span class="oi" data-glyph="reload" title="Reload" aria-hidden="true"></span>
     </button>
     <a href="https://github.com/cshaver/pretty-delaunay" target="_blank" class="delaunay-button info-button" aria-label="About this trianglulation widget (opens a new window)">
-      <img src="{{ "/images/icons/info.svg" | prepend: site.baseurl }}" alt="About this trianglulation widget (opens a new window)">
+      <span class="oi" data-glyph="info" title="Info" aria-hidden="true"></span>
     </a>
   </div>
 

@@ -1,0 +1,418 @@
+$socicon-font-path: '../fonts/' !default;
+
+@font-face {
+  font-family: 'Socicons';
+  src: url('#{$socicon-font-path}socicon.eot');
+  src: url('#{$socicon-font-path}socicon.eot?#iefix') format('embedded-opentype'),
+       url('#{$socicon-font-path}socicon.woff') format('woff'),
+       url('#{$socicon-font-path}socicon.ttf') format('truetype'),
+       url('#{$socicon-font-path}socicon.svg#socicon') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.si[data-glyph].si-text-replace {
+  font-size: 0;
+  line-height: 0;
+}
+
+.si[data-glyph].si-text-replace:before {
+  width: 1em;
+  text-align: center;
+}
+
+.si[data-glyph] {
+  &:before {
+    position: relative;
+    top: 1px;
+    font-family: 'Socicons';
+    display: inline-block;
+    speak: none;
+    line-height: 1;
+    vertical-align: baseline;
+    font-weight: normal;
+    font-style: normal;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  &:empty:before {
+    width: 1em;
+    text-align: center;
+    box-sizing: content-box;
+  }
+
+  &.si-align-left:before {
+    text-align: left;
+  }
+  &.si-align-right:before {
+    text-align: right;
+  }
+  &.si-align-center:before {
+    text-align: center;
+  }
+
+  &.si-flip-horizontal:before {
+    -webkit-transform: scale(-1, 1);
+    -ms-transform: scale(-1, 1);
+    transform: scale(-1, 1);
+  }
+
+  &.si-flip-vertical:before {
+    -webkit-transform: scale(1, -1);
+    -ms-transform: scale(-1, 1);
+    transform: scale(1, -1);
+  }
+
+  &.si-flip-horizontal-vertical:before {
+    -webkit-transform: scale(-1, -1);
+    -ms-transform: scale(-1, 1);
+    transform: scale(-1, -1);
+  }
+}
+
+.si[data-glyph='modelmayhem']:before {
+  content: "\e000";
+}
+.si[data-glyph='mixcloud']:before {
+  content: "\e001";
+}
+.si[data-glyph='drupal']:before {
+  content: "\e002";
+}
+.si[data-glyph='swarm']:before {
+  content: "\e003";
+}
+.si[data-glyph='istock']:before {
+  content: "\e004";
+}
+.si[data-glyph='yammer']:before {
+  content: "\e005";
+}
+.si[data-glyph='ello']:before {
+  content: "\e006";
+}
+.si[data-glyph='stackoverflow']:before {
+  content: "\e007";
+}
+.si[data-glyph='persona']:before {
+  content: "\e008";
+}
+.si[data-glyph='triplej']:before {
+  content: "\e009";
+}
+.si[data-glyph='houzz']:before {
+  content: "\e00a";
+}
+.si[data-glyph='rss']:before {
+  content: "\e00b";
+}
+.si[data-glyph='paypal']:before {
+  content: "\e00c";
+}
+.si[data-glyph='odnoklassniki']:before {
+  content: "\e00d";
+}
+.si[data-glyph='airbnb']:before {
+  content: "\e00e";
+}
+.si[data-glyph='periscope']:before {
+  content: "\e00f";
+}
+.si[data-glyph='outlook']:before {
+  content: "\e010";
+}
+.si[data-glyph='coderwall']:before {
+  content: "\e011";
+}
+.si[data-glyph='tripadvisor']:before {
+  content: "\e012";
+}
+.si[data-glyph='appnet']:before {
+  content: "\e013";
+}
+.si[data-glyph='goodreads']:before {
+  content: "\e014";
+}
+.si[data-glyph='tripit']:before {
+  content: "\e015";
+}
+.si[data-glyph='lanyrd']:before {
+  content: "\e016";
+}
+.si[data-glyph='slideshare']:before {
+  content: "\e017";
+}
+.si[data-glyph='buffer']:before {
+  content: "\e018";
+}
+.si[data-glyph='disqus']:before {
+  content: "\e019";
+}
+.si[data-glyph='vkontakte']:before {
+  content: "\e01a";
+}
+.si[data-glyph='whatsapp']:before {
+  content: "\e01b";
+}
+.si[data-glyph='patreon']:before {
+  content: "\e01c";
+}
+.si[data-glyph='storehouse']:before {
+  content: "\e01d";
+}
+.si[data-glyph='pocket']:before {
+  content: "\e01e";
+}
+.si[data-glyph='mail']:before {
+  content: "\e01f";
+}
+.si[data-glyph='blogger']:before {
+  content: "\e020";
+}
+.si[data-glyph='technorati']:before {
+  content: "\e021";
+}
+.si[data-glyph='reddit']:before {
+  content: "\e022";
+}
+.si[data-glyph='dribbble']:before {
+  content: "\e023";
+}
+.si[data-glyph='stumbleupon']:before {
+  content: "\e024";
+}
+.si[data-glyph='digg']:before {
+  content: "\e025";
+}
+.si[data-glyph='envato']:before {
+  content: "\e026";
+}
+.si[data-glyph='behance']:before {
+  content: "\e027";
+}
+.si[data-glyph='delicious']:before {
+  content: "\e028";
+}
+.si[data-glyph='deviantart']:before {
+  content: "\e029";
+}
+.si[data-glyph='forrst']:before {
+  content: "\e02a";
+}
+.si[data-glyph='play']:before {
+  content: "\e02b";
+}
+.si[data-glyph='zerply']:before {
+  content: "\e02c";
+}
+.si[data-glyph='wikipedia']:before {
+  content: "\e02d";
+}
+.si[data-glyph='apple']:before {
+  content: "\e02e";
+}
+.si[data-glyph='flattr']:before {
+  content: "\e02f";
+}
+.si[data-glyph='github']:before {
+  content: "\e030";
+}
+.si[data-glyph='renren']:before {
+  content: "\e031";
+}
+.si[data-glyph='friendfeed']:before {
+  content: "\e032";
+}
+.si[data-glyph='newsvine']:before {
+  content: "\e033";
+}
+.si[data-glyph='identica']:before {
+  content: "\e034";
+}
+.si[data-glyph='bebo']:before {
+  content: "\e035";
+}
+.si[data-glyph='zynga']:before {
+  content: "\e036";
+}
+.si[data-glyph='steam']:before {
+  content: "\e037";
+}
+.si[data-glyph='xbox']:before {
+  content: "\e038";
+}
+.si[data-glyph='windows']:before {
+  content: "\e039";
+}
+.si[data-glyph='qq']:before {
+  content: "\e03a";
+}
+.si[data-glyph='douban']:before {
+  content: "\e03b";
+}
+.si[data-glyph='meetup']:before {
+  content: "\e03c";
+}
+.si[data-glyph='playstation']:before {
+  content: "\e03d";
+}
+.si[data-glyph='android']:before {
+  content: "\e03e";
+}
+.si[data-glyph='snapchat']:before {
+  content: "\e03f";
+}
+.si[data-glyph='twitter']:before {
+  content: "\e040";
+}
+.si[data-glyph='facebook']:before {
+  content: "\e041";
+}
+.si[data-glyph='googleplus']:before {
+  content: "\e042";
+}
+.si[data-glyph='pinterest']:before {
+  content: "\e043";
+}
+.si[data-glyph='foursquare']:before {
+  content: "\e044";
+}
+.si[data-glyph='yahoo']:before {
+  content: "\e045";
+}
+.si[data-glyph='skype']:before {
+  content: "\e046";
+}
+.si[data-glyph='yelp']:before {
+  content: "\e047";
+}
+.si[data-glyph='feedburner']:before {
+  content: "\e048";
+}
+.si[data-glyph='linkedin']:before {
+  content: "\e049";
+}
+.si[data-glyph='viadeo']:before {
+  content: "\e04a";
+}
+.si[data-glyph='xing']:before {
+  content: "\e04b";
+}
+.si[data-glyph='myspace']:before {
+  content: "\e04c";
+}
+.si[data-glyph='soundcloud']:before {
+  content: "\e04d";
+}
+.si[data-glyph='spotify']:before {
+  content: "\e04e";
+}
+.si[data-glyph='grooveshark']:before {
+  content: "\e04f";
+}
+.si[data-glyph='lastfm']:before {
+  content: "\e050";
+}
+.si[data-glyph='youtube']:before {
+  content: "\e051";
+}
+.si[data-glyph='vimeo']:before {
+  content: "\e052";
+}
+.si[data-glyph='dailymotion']:before {
+  content: "\e053";
+}
+.si[data-glyph='vine']:before {
+  content: "\e054";
+}
+.si[data-glyph='flickr']:before {
+  content: "\e055";
+}
+.si[data-glyph='500px']:before {
+  content: "\e056";
+}
+.si[data-glyph='instagram']:before {
+  content: "\e057";
+}
+.si[data-glyph='wordpress']:before {
+  content: "\e058";
+}
+.si[data-glyph='tumblr']:before {
+  content: "\e059";
+}
+.si[data-glyph='twitch']:before {
+  content: "\e05a";
+}
+.si[data-glyph='8tracks']:before {
+  content: "\e05b";
+}
+.si[data-glyph='amazon']:before {
+  content: "\e05c";
+}
+.si[data-glyph='icq']:before {
+  content: "\e05d";
+}
+.si[data-glyph='smugmug']:before {
+  content: "\e05e";
+}
+.si[data-glyph='ravelry']:before {
+  content: "\e05f";
+}
+.si[data-glyph='weibo']:before {
+  content: "\e060";
+}
+.si[data-glyph='baidu']:before {
+  content: "\e061";
+}
+.si[data-glyph='angellist']:before {
+  content: "\e062";
+}
+.si[data-glyph='ebay']:before {
+  content: "\e063";
+}
+.si[data-glyph='imdb']:before {
+  content: "\e064";
+}
+.si[data-glyph='stayfriends']:before {
+  content: "\e065";
+}
+.si[data-glyph='residentadvisor']:before {
+  content: "\e066";
+}
+.si[data-glyph='google']:before {
+  content: "\e067";
+}
+.si[data-glyph='yandex']:before {
+  content: "\e068";
+}
+.si[data-glyph='sharethis']:before {
+  content: "\e069";
+}
+.si[data-glyph='bandcamp']:before {
+  content: "\e06a";
+}
+.si[data-glyph='itunes']:before {
+  content: "\e06b";
+}
+.si[data-glyph='deezer']:before {
+  content: "\e06c";
+}
+.si[data-glyph='medium']:before {
+  content: "\e06d";
+}
+.si[data-glyph='telegram']:before {
+  content: "\e06e";
+}
+.si[data-glyph='openid']:before {
+  content: "\e06f";
+}
+.si[data-glyph='amplement']:before {
+  content: "\e070";
+}
+.si[data-glyph='viber']:before {
+  content: "\e071";
+}
+.si[data-glyph='zomato']:before {
+  content: "\e072";
+}

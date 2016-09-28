@@ -1,10 +1,12 @@
 (function() {
   // set up DOM elements
-  var canvas = document.getElementById('delaunayHero');
-  var body = document.getElementsByTagName('body')[0];
-  var header = document.getElementById('header');
-  var subhead = document.getElementById('subhead');
-  var redoButton = document.getElementById('delaunayRedo');
+  var canvasHero   = document.getElementById('delaunayHero');
+  var canvasFooter = document.getElementById('delaunayFooter');
+  var body         = document.getElementsByTagName('body')[0];
+  var footer       = document.getElementsByTagName('footer')[0];
+  var header       = document.getElementById('header');
+  var subhead      = document.getElementById('subhead');
+  var redoButton   = document.getElementById('delaunayRedo');
 
   var options = {
     // colors for triangulation to choose from
@@ -17,7 +19,6 @@
       ["hsla(218,48%,22%, 1)", "hsla(301,10%,8%, 1)", "hsla(71,73%,71%, 1)"],
       ["hsla(23,92%,2%, 1)", "hsla(341,93%,35%, 1)", "hsla(270,6%,26%, 1)"],
       ["hsla(70,48%,96%, 1)", "hsla(170,79%,70%, 1)", "hsla(157,4%,13%, 1)"],
-      ["hsla(213,9%,46%, 1)", "hsla(354,81%,68%, 1)", "hsla(191,29%,62%, 1)"],
       ["hsla(4,57%,21%,1)", "hsla(352,54%,49%,1)", "hsla(195,33%,7%,1)"],
       ["hsla(9,39%,17%, 1)", "hsla(335,53%,12%, 1)", "hsla(334,20%,0%, 1)"],
       // edges = true
@@ -35,6 +36,10 @@
     },
     {
       text:'Dungeon Master',
+      weight: 10,
+    },
+    {
+      text:'Good at Google',
       weight: 10,
     },
     {
@@ -102,17 +107,41 @@
 
   // on redo button make a new triangulation and get a new subhead
   delaunayRedo.addEventListener('click', function() {
-    prettyDelaunay.randomize();
-    randomSubhead();
+    generatePrettyDelaunay();
   });
 
   // init delaunay plugin and get one triangulation
-  var prettyDelaunay = new PrettyDelaunay(canvas, options);
-  prettyDelaunay.randomize();
+  var heroDelaunay = new PrettyDelaunay(canvasHero, options);
+  var footerDelaunay = new PrettyDelaunay(canvasFooter, {});
+  generatePrettyDelaunay(true);
 
   /**
    * Helper Functions
   **/
+
+  // generate pretty delaunay with synced colors for hero and footer
+  function generatePrettyDelaunay(firstTime) {
+    // generate a random multiplier between max and min
+    var max = 0.8;
+    var min = 0.2;
+    var multiplier = Math.random() * (max - min) + min;
+
+    // set multiplier on both prettydelanay instances
+    heroDelaunay.options.multiplier = multiplier;
+    footerDelaunay.options.multiplier = multiplier;
+
+    if (!firstTime) {
+      // randomize is run on init, so we dont need to do it again
+      heroDelaunay.randomize();
+      // leave "web developer" as first subhead
+      randomSubhead();
+    }
+
+    // sync the hero colors with the footer since hero
+    // will choose randomly from color palette
+    footerDelaunay.colors = heroDelaunay.getColors();
+    footerDelaunay.randomize();
+  }
 
   // add index to array "weight" number of times
   // so an item with weight two will be added twice
@@ -124,6 +153,8 @@
     }
   }
 
+  // swap the hero subhead with something (weighted, sequence optional)
+  // random from the list of subheads
   function randomSubhead() {
     var newSubhead;
     var i;
@@ -157,6 +188,9 @@
     }
   }
 
+  // on delaunay regen, change the color of the subhead
+  // and add a text shadow to the hero title if it's
+  // an especially light background
   function colorChange(color) {
     var lightness = hslaGetLightness(color);
 
@@ -177,10 +211,16 @@
     }
   }
 
-  // not necessarily "lighter", more like
-  // a lightness on the other side of the spectrum
+  // use maths to get a more contrasted color
   function lighterColor(lightness) {
-    return (lightness + 200 - lightness * 2) / 3;
+    let diff = 25;
+    let l = Math.min(lightness + diff, 100);
+
+    if (Math.abs(lightness - l) < diff) {
+      l = Math.max(lightness - diff, 0);
+    }
+
+    return l;
   }
 
   function hslaGetLightness(color) {
