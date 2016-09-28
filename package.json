@@ -1,0 +1,31 @@
+{
+  "name": "cshaver.github.io",
+  "version": "1.0.0",
+  "description": "Personal site",
+  "main": "index.js",
+  "dependencies": {
+    "hexo": "^3.2.2",
+    "hexo-generator-archive": "^0.1.4",
+    "hexo-generator-category": "^0.1.3",
+    "hexo-renderer-stylus": "^0.3.1",
+    "hexo-generator-index": "^0.2.0",
+    "hexo-renderer-ejs": "^0.2.0",
+    "hexo-generator-tag": "^0.2.0",
+    "hexo-renderer-marked": "^0.2.11",
+    "hexo-server": "^0.2.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cshaver/cshaver.github.io.git"
+  },
+  "author": "Cristina Shaver <cristina.shaver@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cshaver/cshaver.github.io/issues"
+  },
+  "homepage": "https://github.com/cshaver/cshaver.github.io#readme"
+}
