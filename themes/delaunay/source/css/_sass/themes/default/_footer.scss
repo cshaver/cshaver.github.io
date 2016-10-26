@@ -1,0 +1,21 @@
+
+footer {
+  position: relative;
+  background: swatch(black);
+  color: swatch(white);
+
+  * {
+    z-index: 2;
+    position: relative;
+  }
+
+  // .delaunay-canvas-wrapper {
+  //   filter: blur(2px);
+  //   overflow: hidden;
+  // }
+
+  .footer-content-wrapper {
+    background: rgba(0, 0, 0, 0.2);
+    padding: 1em;
+  }
+}

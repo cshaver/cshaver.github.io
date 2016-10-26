@@ -1,0 +1,16 @@
+<section>
+  <ul>
+    {{#each page.posts}}{{#each this}}
+      <li>
+        <h3><a href="{{path}}">{{title}}</a></h3>
+        <div class='text-muted'>
+          {{formatDate date @root.config.date_format}}
+        </div>
+
+        {{#if excerpt}}
+          <p>{{excerpt}}</p>
+        {{/if}}
+      </li>
+    {{/each}}{{/each}}
+  </ul>
+</section>

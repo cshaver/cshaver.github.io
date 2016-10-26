@@ -1,0 +1,28 @@
+.delaunay-canvas-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+}
+
+.delaunay-button {
+  @extend %icon-button;
+
+  position: absolute;
+  bottom: $-button-spacing-large;
+  left: $-button-spacing-large;
+
+  + .delaunay-button {
+    left: (($-button-spacing-large * 2) + $-button-size-large);
+
+    @include viewport(medium) {
+      left: (($-button-spacing-medium * 2) + $-button-size-medium);
+    }
+
+    @include viewport(small) {
+      left: (($-button-spacing-small * 2) + $-button-size-small);
+    }
+  }
+}

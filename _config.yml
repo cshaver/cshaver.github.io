@@ -10,6 +10,32 @@ author: Cristina Shaver
 language:
 timezone:
 
+# Contact
+contact:
+  mail:
+    url: mailto:cristina.shaver@gmail.com
+    title: Email
+  github:
+    url: https://github.com/cshaver/
+    title: GitHub
+  twitter:
+    url: https://twitter.com/CristinaShaver
+    title: Twitter
+  linkedin:
+    url: https://www.linkedin.com/in/cristina-shaver-71547056
+    title: LinkedIn
+  facebook:
+    url: https://www.facebook.com/peachWins
+    title: Facebook
+  googleplus:
+    url: https://plus.google.com/u/0/109420334197687707956
+    title: Google+
+
+sections:
+  - title: About Me
+    subhead: Foo Bar Baz
+    content: Galaxies from which we spring courage of our questions. Network of wormholes cosmic ocean rich in heavy atoms, of brilliant syntheses, Hypatia, white dwarf emerged into consciousness a billion trillion, astonishment tesseract billions upon billions.
+
 # URL
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
 url: http://yoursite.com
@@ -63,7 +89,21 @@ pagination_dir: page
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
-theme: false
+theme: delaunay
+
+# Browserify Options: https://www.npmjs.com/package/hexo-renderer-browserify
+browserify:
+  exclude:
+    - '**/*.min.js'
+
+# Sass Options: https://www.npmjs.com/package/hexo-renderer-scss
+# Anything specified under the key node_sass in your _config.yml files will be passed directly to the sass.render() call.
+# Check out the node sass options docs for all available settings: https://github.com/sass/node-sass#options
+node_sass:
+  debug: false
+  outputStyle: nested
+  precision: 5
+  sourceComments: true
 
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html

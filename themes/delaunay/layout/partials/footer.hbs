@@ -1,0 +1,17 @@
+<footer>
+  <div class="footer-content-wrapper">
+    <h3>Hey this is the footer</h3>
+    <ul>
+      {{#each config.contact as |contact social|}}
+        <li aria-label="{{contact.title}}">
+          <a href="{{contact.url}}">
+            <span class="socicon-{{social}}" title="{{social}}" aria-hidden="true"></span>
+          </a>
+        </li>
+      {{/each}}
+    </ul>
+  </div>
+  <div class="delaunay-canvas-wrapper">
+    <canvas id="delaunayFooter" width="500" height="300"></canvas>
+  </div>
+</footer>

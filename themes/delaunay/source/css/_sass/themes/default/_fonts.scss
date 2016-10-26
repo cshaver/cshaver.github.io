@@ -1,0 +1,47 @@
+
+/**
+  * Bakery
+  * http://www.stereo-type.fr/bakery.html
+  */
+// @include font-face("Bakery", "#{$-baseurl}/fonts/bakery/bakery", $file-formats: eot ttf otf woff svg);
+
+// $bakery-stack: Bakery, cursive;
+// @include void(font-add(bakery, $bakery-stack));
+
+@import url(https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300|Open+Sans|PT+Mono|Permanent+Marker);
+
+/**
+  * Rock Salt
+  * https://www.google.com/fonts/specimen/Rock+Salt
+  */
+// $rock-salt-stack: Rock Salt, sans-serif;
+// @include void(font-add(rock-salt, $rock-salt-stack));
+
+/**
+  * Permanent Marker
+  * https://www.google.com/fonts/specimen/Permanent+Marker
+  */
+$permanent-marker-stack: Permanent Marker, sans-serif;
+@include void(font-add(permanent-marker, $permanent-marker-stack));
+
+/**
+  * Open Sans Condensed
+  * https://www.google.com/fonts/specimen/Open+Sans
+  */
+$sans-condensed-stack: Open Sans Condensed, sans-serif;
+@include void(font-add(condensed, $sans-condensed-stack));
+
+
+/**
+  * Open Sans
+  * https://www.google.com/fonts/specimen/Open+Sans
+  */
+$sans-stack: Open Sans, sans-serif;
+@include void(font-add(sans, $sans-stack));
+
+/**
+  * PT Mono
+  * https://www.google.com/fonts/specimen/PT+Mono
+  */
+$mono-stack: PT Mono, monospace;
+@include void(font-add(mono, $mono-stack));
