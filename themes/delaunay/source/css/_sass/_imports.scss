@@ -1,6 +1,3 @@
 // external libraries
-@import "bourbon/bourbon";
-@import "neat/neat";
-
-$iconic-font-path: "/fonts/";
-@import "open-iconic";
+$iconic-font-path: "#{$-baseurl}/fonts/";
+@import "imports/open-iconic";
