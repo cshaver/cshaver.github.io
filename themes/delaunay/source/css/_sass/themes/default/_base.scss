@@ -1,11 +1,40 @@
 @include reset;
 
 body {
-  @include font(sans);
+  font-size: 16px;
+  min-width: 320px;
+  @include font(body);
 }
 
-.oi[data-glyph=reload]:before {
-    content: '\e0b3';
-    position: relative;
-    top: 0.1em;
+code, pre {
+  @include font(mono);
+}
+
+main {
+  margin: 0 auto;
+  width: 85%;
+  max-width: 1024px;
+
+  @include viewport(small) {
+    width: 100%;
+  }
+
+  section {
+    padding: 1em;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: normal;
+    text-transform: uppercase;
+    @include font(headline);
+
+    &:first-child {
+      margin-top: 0;
+    }
+  }
+
+  h2 {
+    font-size: 4rem;
+    margin: 0.5em 0;
+  }
 }

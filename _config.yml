@@ -35,8 +35,12 @@ contact:
     title: Google+
 
 sections:
-  - title: About Me
-    subhead: Foo Bar Baz
+  - title: About
+    content: Galaxies from which we spring courage of our questions. Network of wormholes cosmic ocean rich in heavy atoms, of brilliant syntheses, Hypatia, white dwarf emerged into consciousness a billion trillion, astonishment tesseract billions upon billions.
+  - title: Work
+    # subhead: Foo Bar Baz
+    content: Galaxies from which we spring courage of our questions. Network of wormholes cosmic ocean rich in heavy atoms, of brilliant syntheses, Hypatia, white dwarf emerged into consciousness a billion trillion, astonishment tesseract billions upon billions.
+  - title: Blog
     content: Galaxies from which we spring courage of our questions. Network of wormholes cosmic ocean rich in heavy atoms, of brilliant syntheses, Hypatia, white dwarf emerged into consciousness a billion trillion, astonishment tesseract billions upon billions.
 
 # URL

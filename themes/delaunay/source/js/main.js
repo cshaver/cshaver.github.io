@@ -9,6 +9,7 @@
   var header       = document.getElementById('header');
   var subhead      = document.getElementById('subhead');
   var redoButton   = document.getElementById('delaunayRedo');
+  var colorChangeElements = document.getElementsByClassName('color-change');
 
   var options = {
     // colors for triangulation to choose from
@@ -210,6 +211,10 @@
     } else {
       header.style.color = '';
       header.className = '';
+    }
+
+    for (var i = 0; i < colorChangeElements.length; i++) {
+      colorChangeElements[i].style.color = color;
     }
   }
 

@@ -1,11 +1,11 @@
 <footer>
   <div class="footer-content-wrapper">
-    <h3>Hey this is the footer</h3>
-    <ul>
+    <h3>Get in Touch</h3>
+    <ul class="social-links">
       {{#each config.contact as |contact social|}}
         <li aria-label="{{contact.title}}">
           <a href="{{contact.url}}">
-            <span class="socicon-{{social}}" title="{{social}}" aria-hidden="true"></span>
+            <span class="socicon socicon-{{social}}" title="{{social}}" aria-hidden="true"></span>
           </a>
         </li>
       {{/each}}

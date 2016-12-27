@@ -1,47 +1,26 @@
+// @import url(https://fonts.googleapis.com/css?family=Amatic+SC|Open+Sans+Condensed:300|Open+Sans|PT+Mono|Permanent+Marker|Pacifico|Special+Elite);
+@import url(https://fonts.googleapis.com/css?family=Permanent+Marker|Amatic+SC|Open+Sans|Special+Elite);
 
-/**
-  * Bakery
-  * http://www.stereo-type.fr/bakery.html
-  */
-// @include font-face("Bakery", "#{$-baseurl}/fonts/bakery/bakery", $file-formats: eot ttf otf woff svg);
+$font-stacks: (
+  permanent-marker: 'Permanent Marker, Impact, sans-serif',
+  amatic: 'Amatic SC, sans-serif',
+  sans: 'Open Sans, Lucida Sans Unicode, Lucida Grande, Arial, Helvetica, sans-serif',
+  mono: 'Special Elite, Lucida Console, Monaco, Courier New, monospace'
+);
 
-// $bakery-stack: Bakery, cursive;
-// @include void(font-add(bakery, $bakery-stack));
+// body fonts
+@include void(font-add(headline, map-get($font-stacks, amatic)));
+@include void(font-add(body, map-get($font-stacks, sans)));
+@include void(font-add(mono, map-get($font-stacks, mono)));
 
-@import url(https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300|Open+Sans|PT+Mono|Permanent+Marker);
+// hero fonts
+@include void(font-add-theme(hero));
+@include void(font-add(headline, map-get($font-stacks, permanent-marker), hero));
+@include void(font-add(subhead, map-get($font-stacks, amatic), hero));
 
-/**
-  * Rock Salt
-  * https://www.google.com/fonts/specimen/Rock+Salt
-  */
-// $rock-salt-stack: Rock Salt, sans-serif;
-// @include void(font-add(rock-salt, $rock-salt-stack));
-
-/**
-  * Permanent Marker
-  * https://www.google.com/fonts/specimen/Permanent+Marker
-  */
-$permanent-marker-stack: Permanent Marker, sans-serif;
-@include void(font-add(permanent-marker, $permanent-marker-stack));
-
-/**
-  * Open Sans Condensed
-  * https://www.google.com/fonts/specimen/Open+Sans
-  */
-$sans-condensed-stack: Open Sans Condensed, sans-serif;
-@include void(font-add(condensed, $sans-condensed-stack));
+// footer fonts
+@include void(font-add-theme(footer));
+@include void(font-add(headline, map-get($font-stacks, permanent-marker), footer));
 
 
-/**
-  * Open Sans
-  * https://www.google.com/fonts/specimen/Open+Sans
-  */
-$sans-stack: Open Sans, sans-serif;
-@include void(font-add(sans, $sans-stack));
-
-/**
-  * PT Mono
-  * https://www.google.com/fonts/specimen/PT+Mono
-  */
-$mono-stack: PT Mono, monospace;
-@include void(font-add(mono, $mono-stack));
+// http://www.stereo-type.fr/bakery.html

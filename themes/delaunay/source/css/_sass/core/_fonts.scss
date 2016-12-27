@@ -41,15 +41,15 @@ $-fonts: (
   @return font-set($name, $font, $theme, false);
 }
 
-// returns font from font map maptching theme
+// returns font from font map matching theme
 @function font-get($font, $theme: default) {
   @if map-has-key($-fonts, $theme) {
     $font-theme: map-get($-fonts, $theme);
     @if map-has-key($font-theme, $font) {
-      @return map-get($font-theme, $font);
+      @return unquote(map-get($font-theme, $font));
     }
     @else if map-has-key(map-get($-fonts, default), $font) {
-      @return map-get(map-get($-fonts, default), $font);
+      @return unquote(map-get(map-get($-fonts, default), $font));
     }
     @else {
       @error "`#{$font}` does not exist in `#{$theme}` theme or default theme";

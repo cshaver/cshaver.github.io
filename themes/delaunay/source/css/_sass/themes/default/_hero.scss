@@ -2,6 +2,7 @@ header {
   position: relative;
   color: swatch(white);
   height: 66vh;
+  min-height: 400px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -17,11 +18,11 @@ header {
     margin: 0;
     line-height: 0.85em;
     display: inline-block;
+    @include font(headline, hero);
 
     font: {
-      size: 100px;
+      size: 6rem;
       weight: normal;
-      family: font(permanent-marker);
     }
 
     &.with-shadow {
@@ -33,12 +34,14 @@ header {
   }
 
   h2 {
-    font-size: 40px;
+    font-size: 3.25rem;
     text-transform: uppercase;
     font: {
       weight: bold;
-      family: font(condensed);
+      family: font(subhead, hero);
     }
+
+    margin: 0.5em 0;
 
     @include text-offset-behind(1px, 1px, swatch(white), 0.9);
   }
