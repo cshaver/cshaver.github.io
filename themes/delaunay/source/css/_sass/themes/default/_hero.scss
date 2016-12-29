@@ -9,6 +9,11 @@ header {
 
   @extend %text-center;
 
+  @include viewport(tiny) {
+    // height: 33vh;
+    min-height: 300px;
+  }
+
   * {
     z-index: 2;
     position: relative;
@@ -31,6 +36,10 @@ header {
 
       @include text-offset-behind(-3px, -3px, swatch(white), 1.0, 1);
     }
+
+    @include viewport(tiny) {
+      font-size: 4rem;
+    }
   }
 
   h2 {
@@ -44,5 +53,9 @@ header {
     margin: 0.5em 0;
 
     @include text-offset-behind(1px, 1px, swatch(white), 0.9);
+
+    @include viewport(tiny) {
+      font-size: 3rem;
+    }
   }
 }
