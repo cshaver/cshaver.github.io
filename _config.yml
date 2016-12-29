@@ -124,4 +124,5 @@ node_sass:
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
-  type:
+  type: git
+  repo: https://github.com/cshaver/cshaver.github.io
