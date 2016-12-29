@@ -1,4 +1,3 @@
-// @import url(https://fonts.googleapis.com/css?family=Amatic+SC|Open+Sans+Condensed:300|Open+Sans|PT+Mono|Permanent+Marker|Pacifico|Special+Elite);
 @import url(https://fonts.googleapis.com/css?family=Permanent+Marker|Amatic+SC|Open+Sans|Special+Elite);
 
 $font-stacks: (
@@ -21,6 +20,3 @@ $font-stacks: (
 // footer fonts
 @include void(font-add-theme(footer));
 @include void(font-add(headline, map-get($font-stacks, permanent-marker), footer));
-
-
-// http://www.stereo-type.fr/bakery.html

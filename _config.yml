@@ -126,3 +126,4 @@ node_sass:
 deploy:
   type: git
   repo: https://github.com/cshaver/cshaver.github.io
+  branch: master
