@@ -108,6 +108,22 @@
 
   initWeightedThings();
 
+
+  // add 'focus' class to focused elements, also .tile-items
+  document.addEventListener('focus', function(e) {
+    var focusedItems = document.getElementsByClassName('focus');
+    for (var i = 0; i < focusedItems.length; i++) {
+      focusedItems[i].classList.remove('focus');
+    }
+
+    e.target.classList.add('focus');
+
+    var tileItem = e.target.closest('.tile-item');
+    if (tileItem) {
+      tileItem.classList.add('focus');
+    }
+  }, true);
+
   // on redo button make a new triangulation and get a new subhead
   redoButton.addEventListener('click', function() {
     generatePrettyDelaunay();

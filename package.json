@@ -13,7 +13,8 @@
     "hexo-renderer-handlebars": "^2.0.0",
     "hexo-renderer-marked": "^0.2.11",
     "hexo-renderer-scss": "^1.0.2",
-    "hexo-server": "^0.2.0"
+    "hexo-server": "^0.2.0",
+    "pretty-delaunay": "git+https://git@github.com/cshaver/pretty-delaunay.git"
   },
   "hexo": {
     "version": "3.2.2"

@@ -84,6 +84,25 @@ footer {
           margin-left: -9px;
         }
       }
+
+      &:hover,
+      &:focus {
+        &:after {
+          content: 'x';
+          margin-left: -11px;
+          margin-top: -3px;
+
+          @include viewport(small) {
+            content: 'X';
+            margin-top: -3px;
+            margin-left: -4px;
+          }
+        }
+
+        @include viewport(small) {
+          font-size: 1.25rem;
+        }
+      }
     }
   }
 }

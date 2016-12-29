@@ -1,7 +1,35 @@
 {{#each config.sections}}
   <section>
     <h2>{{title}}</h2>
-    <p>{{subhead}}</p>
     <p>{{content}}</p>
+
+    {{#if tiles}}
+    <ul class="work-tiles">
+      {{#each tiles}}
+        <li class="tile-item{{#unless @last}} tile-{{title}}{{/unless}}">
+          <div class="tile-content">
+            {{#if description}}
+              <h3 class="tile-title">{{title}}</h3>
+              <div class="tile-description">
+                <p>{{{description}}}</p>
+                <p>
+                  {{#if demo}}
+                    <a class="tile-link tile-demo" href="{{demo}}"><span class="oi" data-glyph="eye" aria-hidden="true"></span>Demo</a>
+                  {{/if}}
+                  {{#if link}}
+                    <a class="tile-link" href="{{link}}"><span class="oi" data-glyph="book" aria-hidden="true"></span>Repo</a>
+                  {{/if}}
+                </p>
+              </div>
+            {{else}}
+              <h3 class="tile-title-block-link">
+                <a class="tile-link" href="{{link}}">{{title}}</a>
+              </h3>
+            {{/if}}
+          </div>
+        </li>
+      {{/each}}
+    </ul>
+    {{/if}}
   </section>
 {{/each}}
