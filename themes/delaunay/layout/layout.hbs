@@ -4,12 +4,16 @@
 {{>head}}
 
 <body>
-  {{>header}}
+	{{> header}}
 
-  {{{body}}}
+	<main id="main" class="main">
+		{{> nav}}
 
-  {{>footer}}
+		{{{body}}}
+	</main>
+
+	{{> footer}}
 </body>
 
-<script src="js/main.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
 </html>

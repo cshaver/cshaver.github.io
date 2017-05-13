@@ -1,22 +1,23 @@
-@import url(https://fonts.googleapis.com/css?family=Permanent+Marker|Amatic+SC|Open+Sans|Special+Elite);
+@import url(https://fonts.googleapis.com/css?family=Fjalla+One|Open+Sans|Roboto+Mono);
 
 $font-stacks: (
-  permanent-marker: 'Permanent Marker, Impact, sans-serif',
-  amatic: 'Amatic SC, sans-serif',
+  headline: 'Fjalla One, Impact, sans-serif',
+  subhead: 'Fjalla One, sans-serif',
   sans: 'Open Sans, Lucida Sans Unicode, Lucida Grande, Arial, Helvetica, sans-serif',
-  mono: 'Special Elite, Lucida Console, Monaco, Courier New, monospace'
+  mono: 'Roboto Mono, Lucida Console, Monaco, Courier New, monospace'
 );
 
 // body fonts
-@include void(font-add(headline, map-get($font-stacks, amatic)));
+@include void(font-add(headline, map-get($font-stacks, headline)));
+@include void(font-add(subhead, map-get($font-stacks, sans)));
 @include void(font-add(body, map-get($font-stacks, sans)));
 @include void(font-add(mono, map-get($font-stacks, mono)));
 
 // hero fonts
 @include void(font-add-theme(hero));
-@include void(font-add(headline, map-get($font-stacks, permanent-marker), hero));
-@include void(font-add(subhead, map-get($font-stacks, amatic), hero));
+@include void(font-add(headline, map-get($font-stacks, headline), hero));
+@include void(font-add(subhead, map-get($font-stacks, subhead), hero));
 
 // footer fonts
 @include void(font-add-theme(footer));
-@include void(font-add(headline, map-get($font-stacks, permanent-marker), footer));
+@include void(font-add(headline, map-get($font-stacks, headline), footer));

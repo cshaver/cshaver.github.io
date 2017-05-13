@@ -1,0 +1,35 @@
+header {
+	flex-basis: 40%;
+	max-width: 500px;
+	margin-right: 1em;
+	mix-blend-mode: multiply;
+
+	.header-background {
+		background: swatch(black);
+		color: swatch(white);
+		padding: 1em 2em 1em 1em;
+	}
+
+	h1,
+	h2 {
+		@include font(headline, hero);
+		mix-blend-mode: screen;
+		font-size: 5.5rem;
+		line-height: 1em;
+		text-transform: uppercase;
+
+		margin: 0 0 0.2em;
+
+		&:last-child {
+			margin-bottom: 0;
+		}
+
+		@include viewport(small) {
+			font-size: 4.5rem;
+		}
+
+		@include viewport(tiny) {
+			font-size: 3.5rem;
+		}
+	}
+}

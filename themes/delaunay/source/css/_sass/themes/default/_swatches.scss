@@ -1,8 +1,9 @@
-
+@include void(swatch-add(pink1, #ff518e));
+@include void(swatch-add(pink2, #ffa3d1));
 @include void(swatch-add(coral, #ff706e));
 @include void(swatch-add(rose, #4c2221));
 @include void(swatch-add(teal, #53dbd1));
 @include void(swatch-add(deep-teal, #0a6e67));
 @include void(swatch-add(white, white));
-@include void(swatch-add(black, black));
+@include void(swatch-add(black, #111111));
 @include void(swatch-add(gray, gray));

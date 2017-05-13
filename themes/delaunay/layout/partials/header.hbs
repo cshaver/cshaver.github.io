@@ -1,18 +1,22 @@
-<header class="site-header">
+<div class="delaunay-canvas-wrapper">
+	<canvas id="delaunayHero" width="500" height="300"></canvas>
+</div>
+<header class="header">
+	<div class="header-background">
+		<h1 id="header">{{config.title}}.</h1>
+		<h2 id="subhead" data-text="{{config.subtitle}}">{{config.subtitle}}.</h2>
+	</div>
 
-  <div>
-    <h1 data-text="{{config.title }}" id="header">{{config.title}}</h1>
-    <h2 id="subhead" data-text="{{config.subtitle}}">{{config.subtitle}}</h2>
-  </div>
-
-  <div class="delaunay-canvas-wrapper">
-    <canvas id="delaunayHero" width="500" height="300"></canvas>
-    <button id="delaunayRedo" class="delaunay-button redo-button" aria-label="Redo Triangles">
-      <span class="oi" data-glyph="reload" title="Reload" aria-hidden="true"></span>
-    </button>
-    <a href="https://github.com/cshaver/pretty-delaunay" target="_blank" class="delaunay-button info-button" aria-label="About this trianglulation widget (opens a new window)">
-      <span class="oi" data-glyph="info" title="Info" aria-hidden="true"></span>
-    </a>
-  </div>
+	<nav class="social-nav">
+		<ul class="social-links">
+			{{#each config.contact as |contact social|}}
+				<li aria-label="{{contact.title}}">
+					<a href="{{contact.url}}">
+						<span class="socicon socicon-{{social}}" title="{{social}}" aria-hidden="true"></span>
+					</a>
+				</li>
+			{{/each}}
+		</ul>
+	</nav>
 
 </header>

@@ -1,41 +1,79 @@
 @include reset;
 
 body {
-  font-size: 16px;
-  min-width: 320px;
-  @include font(body);
+	font-size: 16px;
+	min-width: 320px;
+	@include font(body);
+	display: flex;
+	flex-flow: row wrap;
+	align-items: flex-start;
+	justify-content: center;
+	position: relative;
+
+	padding: 1rem;
+
+	> * {
+		z-index: 1;
+	}
 }
 
-code, pre {
-  @include font(mono);
+code,
+pre {
+	@include font(mono);
+}
+
+nav {
+	@include font(headline);
+	text-transform: lowercase;
+	font-size: 2rem;
+
+	.nav-links {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+		display: flex;
+	}
+
+	.nav-link {
+		color: swatch(black);
+		padding: 1rem;
+		margin-right: 3rem;
+
+		&:hover,
+		&.current {
+			background: black;
+			color: white;
+			mix-blend-mode: screen;
+		}
+	}
 }
 
 main {
-  padding-top: 1em;
-  margin: 0 auto;
-  width: 85%;
-  max-width: 1024px;
+	margin: 0 2rem;
+	flex-grow: 2;
+	flex-basis: 50%;
 
-  @include viewport(small) {
-    width: 100%;
-  }
+	mix-blend-mode: multiply;
 
-  section {
-    padding: 1em;
-  }
+	section {
+		padding: 1em;
+	}
 
-  h2 {
-    font-size: 4rem;
-    margin: 0.5em 0;
-    font-weight: normal;
-    @include font(headline);
+	h3 {
+		font-size: 3rem;
+		margin: 0.5em 0;
+		font-weight: normal;
+		@include font(headline);
 
-    &:first-child {
-      margin-top: 0;
-    }
+		&:first-child {
+			margin-top: 0;
+		}
+		@include viewport(tiny) {
+			font-size: 3rem;
+		}
+	}
 
-    @include viewport(tiny) {
-      font-size: 3rem;
-    }
-  }
+	p {
+		font-size: 1.25rem;
+	}
 }

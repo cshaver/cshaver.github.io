@@ -1,12 +1,11 @@
 // a map-set function (not included with Sass)
 @function map-set($map, $key, $value) {
-  $new: ($key: $value);
-  @return map-merge($map, $new);
+	$new: ($key: $value);
+	@return map-merge($map, $new);
 }
-
 // hack for using functions as void with sideffects
 @mixin void($out) {
-  %void {
-    content: $out;
-  }
+	%void {
+		content: $out;
+	}
 }
