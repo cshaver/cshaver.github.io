@@ -3,6 +3,7 @@
 	$new: ($key: $value);
 	@return map-merge($map, $new);
 }
+
 // hack for using functions as void with sideffects
 @mixin void($out) {
 	%void {

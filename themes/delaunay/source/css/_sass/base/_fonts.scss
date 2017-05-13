@@ -1,10 +1,10 @@
-@import url(https://fonts.googleapis.com/css?family=Fjalla+One|Open+Sans|Roboto+Mono);
+@import url('https://fonts.googleapis.com/css?family=Fjalla+One|Open+Sans|Roboto+Mono');
 
 $font-stacks: (
-  headline: 'Fjalla One, Impact, sans-serif',
-  subhead: 'Fjalla One, sans-serif',
-  sans: 'Open Sans, Lucida Sans Unicode, Lucida Grande, Arial, Helvetica, sans-serif',
-  mono: 'Roboto Mono, Lucida Console, Monaco, Courier New, monospace'
+	headline: 'Fjalla One, Impact, sans-serif',
+	subhead: 'Fjalla One, sans-serif',
+	sans: 'Open Sans, Lucida Sans Unicode, Lucida Grande, Arial, Helvetica, sans-serif',
+	mono: 'Roboto Mono, Lucida Console, Monaco, Courier New, monospace'
 );
 
 // body fonts
