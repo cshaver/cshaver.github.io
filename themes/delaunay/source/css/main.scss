@@ -1,9 +1,8 @@
-@charset "utf-8";
+@charset 'utf-8';
 
-$-baseurl: "";
+$-baseurl: '';
 
 // Import partials from `sass_dir` (defaults to `_sass`)
-@import "_sass/imports";
-@import "_sass/core";
-@import "_sass/themes";
-@import "_sass/modules";
+@import '_sass/core';
+@import '_sass/base';
+@import '_sass/modules';

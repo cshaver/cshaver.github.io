@@ -18,6 +18,7 @@
     "hexo-renderer-marked": "^0.2.11",
     "hexo-renderer-scss": "^1.0.2",
     "hexo-server": "^0.2.0",
+    "node-sass-json-importer": "^3.0.2",
     "pretty-delaunay": "git+https://git@github.com/cshaver/pretty-delaunay.git"
   },
   "hexo": {

@@ -1,8 +1,9 @@
-// functions, mixins, etc
-@import "core/reset";
-@import "core/helpers";
-@import "core/swatches";
-@import "core/fonts";
-@import "core/typography";
-@import "core/viewports";
-@import "core/layout";
+// these things come first
+@import 'core/settings';
+// everything else
+@import 'core/fonts';
+@import 'core/helpers';
+@import 'core/layout';
+@import 'core/swatches';
+@import 'core/typography';
+@import 'core/viewports';
