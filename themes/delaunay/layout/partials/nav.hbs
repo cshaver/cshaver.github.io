@@ -1,7 +1,11 @@
 <nav id="nav" class="nav">
 	<ul class="nav-links">
 		{{#each config.pages}}
-			<a class="nav-link" href="/{{url}}"><li>{{title}}</li></a>
+			{{#eq (join url 'index.html') @root.path}}
+				<li class="nav-link current">{{title}}</li>
+			 {{else}}
+			 	<a class="nav-link" href="/{{url}}"><li>{{title}}</li></a>
+			 {{/eq}}
 		{{/each}}
 	</ul>
 </nav>

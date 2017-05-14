@@ -34,13 +34,13 @@ contact:
     url: https://plus.google.com/u/0/109420334197687707956
     title: Google+
 
-  pages:
-    - title: About
-      url: ''
-    - title: Work
-      url: work
-    - title: Contact
-      url: contact
+pages:
+  - title: About
+    url: ''
+  - title: Work
+    url: 'work/'
+  - title: Contact
+    url: 'contact/'
 
 blog_enabled: false
 

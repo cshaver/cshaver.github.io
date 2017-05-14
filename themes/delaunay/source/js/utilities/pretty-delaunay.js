@@ -16,19 +16,19 @@ export function generatePrettyDelaunay(firstTime) {
 	var multiplier = Math.random() * (max - min) + min;
 
 	// set multiplier on both prettydelanay instances
-	heroDelaunay.options.multiplier = multiplier;
+	delaunay.options.multiplier = multiplier;
 	// footerDelaunay.options.multiplier = multiplier;
 
 	if (!firstTime) {
 		// randomize is run on init, so we dont need to do it again
-		heroDelaunay.randomize();
+		delaunay.randomize();
 		// leave "web developer" as first subhead
 		randomSubhead();
 	}
 
 	// sync the hero colors with the footer since hero
 	// will choose randomly from color palette
-	// footerDelaunay.colors = heroDelaunay.getColors();
+	// footerDelaunay.colors = delaunay.getColors();
 	// footerDelaunay.randomize();
 }
 
