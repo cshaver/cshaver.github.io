@@ -4,13 +4,21 @@ body {
 	@include font(body);
 	font-size: 16px;
 	min-width: 320px;
+	min-height: 80vh;
 	display: flex;
 	flex-flow: row wrap;
 	align-items: flex-start;
 	justify-content: center;
 	position: relative;
-
 	padding: 1rem;
+
+	color: swatch(black);
+	background: swatch(white);
+
+	&.dark {
+		color: swatch(white);
+		background: swatch(black);
+	}
 
 	> * {
 		z-index: 1;
@@ -40,10 +48,24 @@ nav {
 		margin-right: 3rem;
 
 		&:hover,
-		&.current {
+		&.current,
+		.dark & {
 			background: black;
 			color: white;
 			mix-blend-mode: screen;
+		}
+
+		.dark & {
+			background: black;
+			color: white;
+			mix-blend-mode: screen;
+
+			&:hover,
+			&.current {
+				color: black;
+				background: white;
+				mix-blend-mode: multiply;
+			}
 		}
 	}
 }
@@ -54,6 +76,10 @@ main {
 	flex-basis: 50%;
 
 	mix-blend-mode: multiply;
+
+	.dark & {
+		mix-blend-mode: screen;
+	}
 
 	section {
 		padding: 1em;
@@ -76,5 +102,13 @@ main {
 
 	p {
 		font-size: 1.25rem;
+	}
+}
+
+a {
+	color: black;
+
+	&:hover {
+		text-decoration: none;
 	}
 }

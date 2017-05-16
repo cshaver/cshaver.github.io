@@ -10,6 +10,18 @@ header {
 		padding: 1em 2em 1em 1em;
 	}
 
+	&:hover {
+		cursor: pointer;
+	}
+
+	h2 {
+		min-width: 370px;
+
+		@include viewport(small) {
+			min-width: 320px;
+		}
+	}
+
 	h1,
 	h2 {
 		@include font(headline, hero);
