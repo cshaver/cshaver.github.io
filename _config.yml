@@ -121,3 +121,5 @@ deploy:
   type: git
   repo: https://github.com/cshaver/cshaver.github.io
   branch: master
+  name: Cristina Shaver
+  email: cristina.shaver@gmail.com
