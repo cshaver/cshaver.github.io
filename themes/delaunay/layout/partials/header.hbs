@@ -4,19 +4,9 @@
 <header class="header">
 	<div id="header" class="header-background">
 		<h1 id="title">{{config.title}}.</h1>
-		<h2 id="subhead" data-text="{{config.subtitle}}">{{config.subtitle}}.</h2>
+		<h2 id="subhead">{{config.subtitle}}.</h2>
 	</div>
 
-	<nav class="social-nav">
-		<ul class="social-links">
-			{{#each config.contact as |contact social|}}
-				<li aria-label="{{contact.title}}">
-					<a href="{{contact.url}}">
-						<span class="socicon socicon-{{social}}" title="{{social}}" aria-hidden="true"></span>
-					</a>
-				</li>
-			{{/each}}
-		</ul>
-	</nav>
+	{{> social}}
 
 </header>

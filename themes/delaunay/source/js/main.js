@@ -1,8 +1,5 @@
 import * as constants from './constants';
-import * as colors from './utilities/colors';
 import * as prettyDelaunay from './utilities/pretty-delaunay';
-
-const PrettyDelaunay = require('pretty-delaunay');
 
 const header = document.getElementById('header');
 
@@ -17,6 +14,6 @@ header.addEventListener('click', (e) => {
 	subhead.innerHTML = randomSubhead.text;
 
 	if (randomSubhead.title) {
-		title.innerHTML = randomSubhead.title
+		title.innerHTML = randomSubhead.title;
 	}
-})
+});

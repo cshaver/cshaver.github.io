@@ -1,0 +1,40 @@
+nav {
+	@include font(headline);
+	font-size: 2rem;
+
+	@include viewport(tiny) {
+		font-size: #{(5/3)}rem;
+	}
+
+	.nav-links {
+		text-transform: lowercase;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+		display: flex;
+
+		@include viewport(small) {
+			justify-content: center;
+		}
+	}
+
+	.nav-link {
+		color: swatch(black);
+		padding: 1rem;
+
+		+ .nav-link {
+			margin-left: 1em;
+
+			@include viewport(small) {
+				margin-left: 1em;
+			}
+		}
+
+		&:hover,
+		&.current {
+			background: black;
+			color: white;
+			mix-blend-mode: screen;
+		}
+	}
+}

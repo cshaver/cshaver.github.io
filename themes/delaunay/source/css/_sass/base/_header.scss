@@ -1,5 +1,5 @@
 header {
-	flex-basis: 40%;
+	flex-grow: 1;
 	max-width: 500px;
 	margin-right: 1em;
 	mix-blend-mode: multiply;
@@ -7,19 +7,20 @@ header {
 	.header-background {
 		background: swatch(black);
 		color: swatch(white);
-		padding: 1em 2em 1em 1em;
+		padding: 1em 3em 1em 1em;
 	}
 
 	&:hover {
 		cursor: pointer;
 	}
 
-	h2 {
-		min-width: 370px;
+	@include viewport(small) {
+		max-width: 400px;
+		margin: 0 0 2em 0;
+	}
 
-		@include viewport(small) {
-			min-width: 320px;
-		}
+	@include viewport(tiny) {
+		max-width: 340px;
 	}
 
 	h1,
@@ -30,14 +31,21 @@ header {
 		line-height: 1em;
 		text-transform: uppercase;
 
+		min-width: 380px;
 		margin: 0 0 0.2em;
 
 		&:last-child {
 			margin-bottom: 0;
 		}
 
+		@include viewport(medium) {
+			font-size: 4rem;
+			min-width: 276px;
+		}
+
 		@include viewport(small) {
 			font-size: 4.5rem;
+			min-width: 336px;
 		}
 
 		@include viewport(tiny) {

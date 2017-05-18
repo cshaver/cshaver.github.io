@@ -6,7 +6,7 @@ body {
 	min-width: 320px;
 	min-height: 80vh;
 	display: flex;
-	flex-flow: row wrap;
+	flex-flow: row;
 	align-items: flex-start;
 	justify-content: center;
 	position: relative;
@@ -15,9 +15,8 @@ body {
 	color: swatch(black);
 	background: swatch(white);
 
-	&.dark {
-		color: swatch(white);
-		background: swatch(black);
+	@include viewport(small) {
+		flex-flow: row wrap;
 	}
 
 	> * {
@@ -30,56 +29,11 @@ pre {
 	@include font(mono);
 }
 
-nav {
-	@include font(headline);
-	text-transform: lowercase;
-	font-size: 2rem;
-
-	.nav-links {
-		margin: 0;
-		padding: 0;
-		list-style: none;
-		display: flex;
-	}
-
-	.nav-link {
-		color: swatch(black);
-		padding: 1rem;
-		margin-right: 3rem;
-
-		&:hover,
-		&.current,
-		.dark & {
-			background: black;
-			color: white;
-			mix-blend-mode: screen;
-		}
-
-		.dark & {
-			background: black;
-			color: white;
-			mix-blend-mode: screen;
-
-			&:hover,
-			&.current {
-				color: black;
-				background: white;
-				mix-blend-mode: multiply;
-			}
-		}
-	}
-}
-
 main {
-	margin: 0 2rem;
-	flex-grow: 2;
-	flex-basis: 50%;
+	margin: 0 1rem;
+	flex-grow: 3;
 
 	mix-blend-mode: multiply;
-
-	.dark & {
-		mix-blend-mode: screen;
-	}
 
 	section {
 		padding: 1em;
@@ -96,12 +50,25 @@ main {
 		}
 
 		@include viewport(tiny) {
-			font-size: 3rem;
+			font-size: 2.5rem;
+		}
+	}
+
+	h4 {
+		font-size: #{(5/3)}rem;
+		margin-bottom: #{(1/3)}em;
+
+		@include viewport(tiny) {
+			font-size: #{(4/3)}rem;
 		}
 	}
 
 	p {
 		font-size: 1.25rem;
+	}
+
+	@include viewport(small) {
+		margin: 0;
 	}
 }
 
