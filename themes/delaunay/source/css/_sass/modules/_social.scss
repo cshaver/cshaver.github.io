@@ -5,6 +5,11 @@
 	margin-right: #{(2/3)}em;
 	height: #{(4/3)}em;
 	line-height: #{(4/3)}em;
+
+	&.octicon-npm {
+		height: 2em;
+		margin-top: -#{(3/12)}em;
+	}
 }
 
 .octicon-sprites {
@@ -13,7 +18,7 @@
 	width: 0;
 }
 
-.social-links {
+.icon-links {
 	margin: 1rem 1rem 0;
 	padding: 0;
 	list-style: none;
@@ -22,17 +27,10 @@
 	align-items: left;
 	cursor: default;
 
-
 	li {
 		margin: 0 0 #{(1/3)}em 0;
 		padding: 0;
-		font-size: 1.5rem;
-		line-height: 2rem;
 		position: relative;
-
-		@include viewport(small) {
-			font-size: #{(4/3)}rem;
-		}
 
 		a {
 			color: swatch(black);
@@ -43,5 +41,31 @@
 				text-decoration: underline;
 			}
 		}
+	}
+}
+
+.social-links {
+	li {
+		font-size: 1.5rem;
+		line-height: 2rem;
+
+		@include viewport(small) {
+			font-size: #{(4/3)}rem;
+		}
+	}
+}
+
+.project-links {
+	margin: 1rem auto -0.5rem;
+
+	display: flex;
+	flex-direction: row;
+
+	li {
+		margin-right: 2em;
+	}
+
+	.octicon {
+		margin-right: #{(1/3)}em;
 	}
 }

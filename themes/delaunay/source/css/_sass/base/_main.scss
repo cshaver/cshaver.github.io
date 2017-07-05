@@ -63,7 +63,18 @@ main {
 		}
 	}
 
+	h3,
 	p {
+		max-width: 80%;
+
+		@include viewport(medium) {
+			max-width: none;
+		}
+	}
+
+	p,
+	p + ul,
+	p + ol {
 		font-size: 1.25rem;
 	}
 
