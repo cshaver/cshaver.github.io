@@ -33,5 +33,8 @@
   "bugs": {
     "url": "https://github.com/cshaver/cshaver.github.io/issues"
   },
+	"scripts": {
+		"deploy": "git submodule update --init --remote --checkout && git submodule foreach --recursive git pull && hexo deploy --generate"
+	},
   "homepage": "https://github.com/cshaver/cshaver.github.io#readme"
 }
