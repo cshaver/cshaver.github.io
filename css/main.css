@@ -1,0 +1,646 @@
+@import url("https://fonts.googleapis.com/css?family=Fjalla+One|Open+Sans|Roboto+Mono");
+/* line 1, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_footer.scss */
+footer {
+  flex-basis: 100%; }
+
+/* line 1, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_header.scss */
+header {
+  flex-grow: 1;
+  max-width: 500px;
+  margin-right: 1em;
+  mix-blend-mode: multiply; }
+  /* line 7, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_header.scss */
+  header .header-background {
+    background: #111111;
+    color: white;
+    padding: 1em 3em 1em 1em; }
+  /* line 13, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_header.scss */
+  header:hover {
+    cursor: pointer; }
+  @media only screen and (max-width: 767px) {
+    /* line 1, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_header.scss */
+    header {
+      max-width: 400px;
+      margin: 0 0 2em 0; } }
+  @media only screen and (max-width: 515px) {
+    /* line 1, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_header.scss */
+    header {
+      max-width: 340px; } }
+  /* line 26, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_header.scss */
+  header h1,
+  header h2 {
+    font-family: Fjalla One, Impact, sans-serif;
+    mix-blend-mode: screen;
+    font-size: 5.5rem;
+    line-height: 1em;
+    text-transform: uppercase;
+    min-width: 380px;
+    margin: 0 0 0.2em; }
+    /* line 37, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_header.scss */
+    header h1:last-child,
+    header h2:last-child {
+      margin-bottom: 0; }
+    @media only screen and (max-width: 1024px) {
+      /* line 26, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_header.scss */
+      header h1,
+      header h2 {
+        font-size: 4rem;
+        min-width: 276px; } }
+    @media only screen and (max-width: 767px) {
+      /* line 26, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_header.scss */
+      header h1,
+      header h2 {
+        font-size: 4.5rem;
+        min-width: 336px; } }
+    @media only screen and (max-width: 515px) {
+      /* line 26, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_header.scss */
+      header h1,
+      header h2 {
+        font-size: 3.5rem; } }
+
+/*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
+/**
+	 * 1. Set default font family to sans-serif.
+	 * 2. Prevent iOS and IE text size adjust after device orientation change,
+	 *    without disabling user zoom.
+	 */
+/* line 10, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_reset.scss */
+html {
+  font-family: sans-serif;
+  /* 1 */
+  -ms-text-size-adjust: 100%;
+  /* 2 */
+  -webkit-text-size-adjust: 100%;
+  /* 2 */ }
+
+/**
+	 * Remove default margin.
+	 */
+/* line 20, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_reset.scss */
+body {
+  margin: 0; }
+
+/* HTML5 display definitions
+		 ========================================================================== */
+/**
+	 * Correct `block` display not defined for any HTML5 element in IE 8/9.
+	 * Correct `block` display not defined for `details` or `summary` in IE 10/11
+	 * and Firefox.
+	 * Correct `block` display not defined for `main` in IE 11.
+	 */
+/* line 34, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_reset.scss */
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+main,
+menu,
+nav,
+section,
+summary {
+  display: block; }
+
+/**
+	 * 1. Correct `inline-block` display not defined in IE 8/9.
+	 * 2. Normalize vertical alignment of `progress` in Chrome, Firefox, and Opera.
+	 */
+/* line 55, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_reset.scss */
+audio,
+canvas,
+progress,
+video {
+  display: inline-block;
+  /* 1 */
+  vertical-align: baseline;
+  /* 2 */ }
+
+/**
+	 * Prevent modern browsers from displaying `audio` without controls.
+	 * Remove excess height in iOS 5 devices.
+	 */
+/* line 68, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_reset.scss */
+audio:not([controls]) {
+  display: none;
+  height: 0; }
+
+/**
+	 * Address `[hidden]` styling not present in IE 8/9/10.
+	 * Hide the `template` element in IE 8/9/10/11, Safari, and Firefox < 22.
+	 */
+/* line 78, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_reset.scss */
+[hidden],
+template {
+  display: none; }
+
+/* Links
+		 ========================================================================== */
+/**
+	 * Remove the gray background color from active links in IE 10.
+	 */
+/* line 90, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_reset.scss */
+a {
+  background-color: transparent; }
+
+/**
+	 * Improve readability of focused elements when they are also in an
+	 * active/hover state.
+	 */
+/* line 99, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_reset.scss */
+a:active,
+a:hover {
+  outline: 0; }
+
+/* Text-level semantics
+		 ========================================================================== */
+/**
+	 * Address styling not present in IE 8/9/10/11, Safari, and Chrome.
+	 */
+/* line 111, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_reset.scss */
+abbr[title] {
+  border-bottom: 1px dotted; }
+
+/**
+	 * Address style set to `bolder` in Firefox 4+, Safari, and Chrome.
+	 */
+/* line 119, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_reset.scss */
+b,
+strong {
+  font-weight: bold; }
+
+/**
+	 * Address styling not present in Safari and Chrome.
+	 */
+/* line 128, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_reset.scss */
+dfn {
+  font-style: italic; }
+
+/**
+	 * Address variable `h1` font-size and margin within `section` and `article`
+	 * contexts in Firefox 4+, Safari, and Chrome.
+	 */
+/* line 137, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_reset.scss */
+h1 {
+  font-size: 2em;
+  margin: 0.67em 0; }
+
+/**
+	 * Address styling not present in IE 8/9.
+	 */
+/* line 146, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_reset.scss */
+mark {
+  background: #ff0;
+  color: #000; }
+
+/**
+	 * Address inconsistent and variable font size in all browsers.
+	 */
+/* line 155, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_reset.scss */
+small {
+  font-size: 80%; }
+
+/**
+	 * Prevent `sub` and `sup` affecting `line-height` in all browsers.
+	 */
+/* line 163, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_reset.scss */
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline; }
+
+/* line 171, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_reset.scss */
+sup {
+  top: -0.5em; }
+
+/* line 175, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_reset.scss */
+sub {
+  bottom: -0.25em; }
+
+/* Embedded content
+		 ========================================================================== */
+/**
+	 * Remove border when inside `a` element in IE 8/9/10.
+	 */
+/* line 186, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_reset.scss */
+img {
+  border: 0; }
+
+/**
+	 * Correct overflow not hidden in IE 9/10/11.
+	 */
+/* line 194, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_reset.scss */
+svg:not(:root) {
+  overflow: hidden; }
+
+/* Grouping content
+		 ========================================================================== */
+/**
+	 * Address margin not present in IE 8/9 and Safari.
+	 */
+/* line 205, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_reset.scss */
+figure {
+  margin: 1em 40px; }
+
+/**
+	 * Address differences between Firefox and other browsers.
+	 */
+/* line 213, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_reset.scss */
+hr {
+  box-sizing: content-box;
+  height: 0; }
+
+/**
+	 * Contain overflow in all browsers.
+	 */
+/* line 222, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_reset.scss */
+pre {
+  overflow: auto; }
+
+/**
+	 * Address odd `em`-unit font size rendering in all browsers.
+	 */
+/* line 230, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_reset.scss */
+code,
+kbd,
+pre,
+samp {
+  font-family: monospace, monospace;
+  font-size: 1em; }
+
+/* Forms
+		 ========================================================================== */
+/**
+	 * Known limitation: by default, Chrome and Safari on OS X allow very limited
+	 * styling of `select`, unless a `border` property is set.
+	 */
+/**
+	 * 1. Correct color not being inherited.
+	 *    Known issue: affects color of disabled elements.
+	 * 2. Correct font properties not being inherited.
+	 * 3. Address margins set differently in Firefox 4+, Safari, and Chrome.
+	 */
+/* line 253, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_reset.scss */
+button,
+input,
+optgroup,
+select,
+textarea {
+  color: inherit;
+  /* 1 */
+  font: inherit;
+  /* 2 */
+  margin: 0;
+  /* 3 */ }
+
+/**
+	 * Address `overflow` set to `hidden` in IE 8/9/10/11.
+	 */
+/* line 267, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_reset.scss */
+button {
+  overflow: visible; }
+
+/**
+	 * Address inconsistent `text-transform` inheritance for `button` and `select`.
+	 * All other form control elements do not inherit `text-transform` values.
+	 * Correct `button` style inheritance in Firefox, IE 8/9/10/11, and Opera.
+	 * Correct `select` style inheritance in Firefox.
+	 */
+/* line 278, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_reset.scss */
+button,
+select {
+  text-transform: none; }
+
+/**
+	 * 1. Avoid the WebKit bug in Android 4.0.* where (2) destroys native `audio`
+	 *    and `video` controls.
+	 * 2. Correct inability to style clickable `input` types in iOS.
+	 * 3. Improve usability and consistency of cursor style between image-type
+	 *    `input` and others.
+	 */
+/* line 291, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_reset.scss */
+button,
+html input[type="button"],
+input[type="reset"],
+input[type="submit"] {
+  -webkit-appearance: button;
+  /* 2 */
+  cursor: pointer;
+  /* 3 */ }
+
+/**
+	 * Re-set default cursor for disabled elements.
+	 */
+/* line 303, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_reset.scss */
+button[disabled],
+html input[disabled] {
+  cursor: default; }
+
+/**
+	 * Remove inner padding and border in Firefox 4+.
+	 */
+/* line 312, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_reset.scss */
+button::-moz-focus-inner,
+input::-moz-focus-inner {
+  border: 0;
+  padding: 0; }
+
+/**
+	 * Address Firefox 4+ setting `line-height` on `input` using `!important` in
+	 * the UA stylesheet.
+	 */
+/* line 323, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_reset.scss */
+input {
+  line-height: normal; }
+
+/**
+	 * It's recommended that you don't attempt to style these elements.
+	 * Firefox's implementation doesn't respect box-sizing, padding, or width.
+	 *
+	 * 1. Address box sizing set to `content-box` in IE 8/9/10.
+	 * 2. Remove excess padding in IE 8/9/10.
+	 */
+/* line 335, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_reset.scss */
+input[type="checkbox"],
+input[type="radio"] {
+  box-sizing: border-box;
+  /* 1 */
+  padding: 0;
+  /* 2 */ }
+
+/**
+	 * Fix the cursor style for Chrome's increment/decrement buttons. For certain
+	 * `font-size` values of the `input`, it causes the cursor style of the
+	 * decrement button to change from `default` to `text`.
+	 */
+/* line 347, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_reset.scss */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  height: auto; }
+
+/**
+	 * 1. Address `appearance` set to `searchfield` in Safari and Chrome.
+	 * 2. Address `box-sizing` set to `border-box` in Safari and Chrome.
+	 */
+/* line 357, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_reset.scss */
+input[type="search"] {
+  -webkit-appearance: textfield;
+  /* 1 */
+  box-sizing: content-box;
+  /* 2 */ }
+
+/**
+	 * Remove inner padding and search cancel button in Safari and Chrome on OS X.
+	 * Safari (but not Chrome) clips the cancel button when the search input has
+	 * padding (and `textfield` appearance).
+	 */
+/* line 368, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_reset.scss */
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-decoration {
+  -webkit-appearance: none; }
+
+/**
+	 * Define consistent border, margin, and padding.
+	 */
+/* line 377, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_reset.scss */
+fieldset {
+  border: 1px solid #c0c0c0;
+  margin: 0 2px;
+  padding: 0.35em 0.625em 0.75em; }
+
+/**
+	 * 1. Correct `color` not being inherited in IE 8/9/10/11.
+	 * 2. Remove padding so people aren't caught out if they zero out fieldsets.
+	 */
+/* line 388, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_reset.scss */
+legend {
+  border: 0;
+  /* 1 */
+  padding: 0;
+  /* 2 */ }
+
+/**
+	 * Remove default vertical scrollbar in IE 8/9/10/11.
+	 */
+/* line 397, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_reset.scss */
+textarea {
+  overflow: auto; }
+
+/**
+	 * Don't inherit the `font-weight` (applied by a rule above).
+	 * NOTE: the default cannot safely be changed in Chrome and Safari on OS X.
+	 */
+/* line 406, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_reset.scss */
+optgroup {
+  font-weight: bold; }
+
+/* Tables
+		 ========================================================================== */
+/**
+	 * Remove most spacing between table cells.
+	 */
+/* line 417, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_reset.scss */
+table {
+  border-collapse: collapse;
+  border-spacing: 0; }
+
+/* line 422, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_reset.scss */
+td,
+th {
+  padding: 0; }
+
+/* line 3, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_main.scss */
+body {
+  font-family: Open Sans, Lucida Sans Unicode, Lucida Grande, Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  min-width: 320px;
+  min-height: 80vh;
+  display: flex;
+  flex-flow: row;
+  align-items: flex-start;
+  justify-content: center;
+  position: relative;
+  padding: 1rem;
+  color: #111111;
+  background: white; }
+  @media only screen and (max-width: 767px) {
+    /* line 3, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_main.scss */
+    body {
+      flex-flow: row wrap; } }
+  /* line 22, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_main.scss */
+  body > * {
+    z-index: 1; }
+
+/* line 27, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_main.scss */
+code,
+pre {
+  font-family: Roboto Mono, Lucida Console, Monaco, Courier New, monospace; }
+
+/* line 32, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_main.scss */
+main {
+  margin: 0 1rem;
+  flex-grow: 3;
+  mix-blend-mode: multiply; }
+  /* line 38, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_main.scss */
+  main section {
+    padding: 1em; }
+  /* line 42, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_main.scss */
+  main h3 {
+    font-family: Fjalla One, Impact, sans-serif;
+    font-size: 3rem;
+    margin: 0.5em 0;
+    font-weight: normal; }
+    /* line 48, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_main.scss */
+    main h3:first-child {
+      margin-top: 0; }
+    @media only screen and (max-width: 515px) {
+      /* line 42, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_main.scss */
+      main h3 {
+        font-size: 2.5rem; } }
+  /* line 57, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_main.scss */
+  main h4 {
+    font-size: 1.66667rem;
+    margin-bottom: 0.33333em; }
+    @media only screen and (max-width: 515px) {
+      /* line 57, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_main.scss */
+      main h4 {
+        font-size: 1.33333rem; } }
+  /* line 66, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_main.scss */
+  main h3,
+  main p {
+    max-width: 80%; }
+    @media only screen and (max-width: 1024px) {
+      /* line 66, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_main.scss */
+      main h3,
+      main p {
+        max-width: none; } }
+  /* line 75, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_main.scss */
+  main p,
+  main p + ul,
+  main p + ol {
+    font-size: 1.25rem; }
+  @media only screen and (max-width: 767px) {
+    /* line 32, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_main.scss */
+    main {
+      margin: 0; } }
+
+/* line 86, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_main.scss */
+a {
+  color: #4078c0; }
+  /* line 89, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_main.scss */
+  a:hover {
+    text-decoration: none; }
+
+/* line 1, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_nav.scss */
+nav {
+  font-family: Fjalla One, Impact, sans-serif;
+  font-size: 2rem; }
+  @media only screen and (max-width: 515px) {
+    /* line 1, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_nav.scss */
+    nav {
+      font-size: 1.66667rem; } }
+  /* line 9, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_nav.scss */
+  nav .nav-links {
+    text-transform: lowercase;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex; }
+    @media only screen and (max-width: 767px) {
+      /* line 9, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_nav.scss */
+      nav .nav-links {
+        justify-content: center; } }
+  /* line 21, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_nav.scss */
+  nav .nav-link {
+    color: #111111;
+    padding: 1rem; }
+    /* line 25, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_nav.scss */
+    nav .nav-link + .nav-link {
+      margin-left: 1em; }
+      @media only screen and (max-width: 767px) {
+        /* line 25, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_nav.scss */
+        nav .nav-link + .nav-link {
+          margin-left: 1em; } }
+    /* line 33, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_nav.scss */
+    nav .nav-link:hover, nav .nav-link.current {
+      background: black;
+      color: white;
+      mix-blend-mode: screen; }
+
+/* line 1, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/modules/_delaunay.scss */
+.delaunay-canvas-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -1;
+  pointer-events: none;
+  max-height: 800px; }
+
+/* line 1, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/modules/_social.scss */
+.octicon {
+  display: inline-block;
+  vertical-align: text-bottom;
+  fill: currentColor;
+  margin-right: 0.66667em;
+  height: 1.33333em;
+  line-height: 1.33333em; }
+  /* line 9, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/modules/_social.scss */
+  .octicon.octicon-npm {
+    height: 2em;
+    margin-top: -0.25em; }
+
+/* line 15, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/modules/_social.scss */
+.octicon-sprites {
+  visibility: hidden;
+  height: 0;
+  width: 0; }
+
+/* line 21, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/modules/_social.scss */
+.icon-links {
+  margin: 1rem 1rem 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  cursor: default; }
+  /* line 30, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/modules/_social.scss */
+  .icon-links li {
+    margin: 0 0 0.33333em 0;
+    padding: 0;
+    position: relative; }
+    /* line 35, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/modules/_social.scss */
+    .icon-links li a {
+      color: #111111;
+      text-decoration: none;
+      display: block; }
+      /* line 40, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/modules/_social.scss */
+      .icon-links li a:hover {
+        text-decoration: underline; }
+
+/* line 48, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/modules/_social.scss */
+.social-links li {
+  font-size: 1.5rem;
+  line-height: 2rem; }
+  @media only screen and (max-width: 767px) {
+    /* line 48, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/modules/_social.scss */
+    .social-links li {
+      font-size: 1.33333rem; } }
+
+/* line 58, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/modules/_social.scss */
+.project-links {
+  margin: 1rem auto -0.5rem;
+  display: flex;
+  flex-direction: row; }
+  /* line 64, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/modules/_social.scss */
+  .project-links li {
+    margin-right: 2em; }
+  /* line 68, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/modules/_social.scss */
+  .project-links .octicon {
+    margin-right: 0.33333em; }
