@@ -535,6 +535,10 @@ a {
   a:hover {
     text-decoration: none; }
 
+/* line 94, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_main.scss */
+.picture {
+  mix-blend-mode: normal; }
+
 /* line 1, /Users/cshaver/Personal/cshaver.github.io/themes/delaunay/source/css/_sass/base/_nav.scss */
 nav {
   font-family: Fjalla One, Impact, sans-serif;
