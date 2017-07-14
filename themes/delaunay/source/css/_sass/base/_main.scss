@@ -81,6 +81,16 @@ main {
 	@include viewport(small) {
 		margin: 0;
 	}
+
+	&.blank {
+		margin: 0 auto;
+		max-width: 980px;
+		flex-grow: 0;
+
+		h3 {
+			max-width: none;
+		}
+	}
 }
 
 a {
@@ -89,4 +99,12 @@ a {
 	&:hover {
 		text-decoration: none;
 	}
+}
+
+.picture {
+	mix-blend-mode: normal;
+}
+
+.text-center {
+	text-align: center;
 }
