@@ -20,7 +20,7 @@ Below are some of the side projects I’ve worked on that I’m particularly pro
     </a>
   </li>
   <li aria-label="Demo">
-    <a href="http://codepen.io/poochiepoochie/full/LGEwOB/">
+    <a href="http://codepen.io/cshaver/full/LGEwOB/">
       <svg class="octicon octicon-codepen" version="1.1" viewBox="0 0 32 32" aria-hidden="true"><use xlink:href="#codepen" />
       </svg>Demo
     </a>

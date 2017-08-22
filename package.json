@@ -34,7 +34,7 @@
     "url": "https://github.com/cshaver/cshaver.github.io/issues"
   },
 	"scripts": {
-		"deploy": "git submodule update --init --remote --checkout && git submodule foreach --recursive git pull && rm -rf .deploy_git/* && cp -R public/* .deploy_git/ && cd .deploy_git/ && git add -A && git commit -m \"Updated site ($(cd .. && git log develop -n 1 --pretty=format:\"%h\"))\" && git push && cd ../ && git add .deploy_git && git commit -m \"Update submodule ref\" && git push"
+		"deploy": "git submodule foreach --recursive git pull && rm -rf .deploy_git/* && cp -R public/* .deploy_git/ && cd .deploy_git/ && git add -A && git commit -m \"Updated site ($(cd .. && git log develop -n 1 --pretty=format:\"%h\"))\" && git push && cd ../ && git add .deploy_git && git commit -m \"Update submodule ref\" && git push"
 	},
   "homepage": "https://github.com/cshaver/cshaver.github.io#readme"
 }
