@@ -18,11 +18,12 @@
     "hexo-renderer-markdown-it": "^3.4.1",
     "hexo-renderer-scss": "^1.0.2",
     "hexo-server": "^0.2.0",
+    "node-sass": "^4.12.0",
     "node-sass-json-importer": "^3.0.2",
     "pretty-delaunay": "^1.0.2"
   },
   "hexo": {
-    "version": "3.3.5"
+    "version": "3.9.0"
   },
   "repository": {
     "type": "git",
@@ -34,6 +35,8 @@
     "url": "https://github.com/cshaver/cshaver.github.io/issues"
   },
   "scripts": {
+    "hexo": "hexo",
+    "develop": "hexo server",
     "deploy": "git submodule foreach --recursive git pull && rm -rf .deploy_git/* && cp -R public/* .deploy_git/ && cd .deploy_git/ && git add -A && git commit -m \"Updated site ($(cd .. && git log develop -n 1 --pretty=format:\"%h\"))\" && git push && cd ../ && git add .deploy_git && git commit -m \"Update submodule ref\" && git push"
   },
   "homepage": "https://github.com/cshaver/cshaver.github.io#readme"
